@@ -1,0 +1,16 @@
+.btn {
+  padding: 0.8rem 3.2rem;
+  background-color: transparent;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 3px;
+
+  &--full {
+    background-color: var(--color-main);
+    color: #fff;
+  }
+
+  &--outline {
+    border-color: #47dc47;
+  }
+}

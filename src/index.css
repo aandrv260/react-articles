@@ -6,6 +6,11 @@
   box-sizing: border-box;
 }
 
+:root {
+  --color-main: #4f4fec;
+  --border-radius-default: 4px;
+}
+
 html {
   font-size: 62.5%;
 }
@@ -16,4 +21,11 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #333;
+}
+
+.center-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
