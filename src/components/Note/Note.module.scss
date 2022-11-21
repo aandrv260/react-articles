@@ -13,8 +13,13 @@
   transition: all 0.3s;
 
   &:hover {
+    border-color: var(--color-main);
     box-shadow: 0 2rem 3rem rgba(0, 0, 0, 0.2);
     transform: scale(1.02) translateY(-6px);
+  }
+
+  &:hover &__label::before {
+    background-color: var(--color-text-white);
   }
 
   &__label {
@@ -25,6 +30,22 @@
     height: 6rem;
     width: 3rem;
     transform: rotate(-45deg) translate(20px, -5px);
+
+    &::before {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      top: 41%;
+      left: 40%;
+      transform: translate(-50%, -50%);
+      --size: 1rem;
+      height: var(--size);
+      width: var(--size);
+      // background-color: var(--color-text-white);
+      border-radius: 50%;
+      border: 2px solid var(--color-text-white);
+      transition: all 0.2s;
+    }
   }
 
   &__heading {

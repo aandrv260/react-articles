@@ -4,13 +4,18 @@
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: 3px;
+  transition: all ease-in-out 0.2s;
 
+  &--outline:hover,
   &--full {
     background-color: var(--color-main);
     color: #fff;
   }
 
+  &--full:hover,
   &--outline {
-    border-color: #47dc47;
+    border-color: var(--color-main);
+    background-color: transparent;
+    color: var(--color-main-text);
   }
 }

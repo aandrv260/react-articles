@@ -1,0 +1,49 @@
+.form-filter {
+  display: flex;
+  //   justify-content: center;
+  gap: 2.4rem;
+  //   flex-wrap: wrap;
+
+  &:not(:last-child) {
+    margin-bottom: 2rem;
+  }
+
+  &.with-groups {
+    flex-direction: column;
+  }
+
+  & > *:not(&__group) {
+    label:not([for^='custom-checkbox']) {
+      display: inline-block;
+      margin-bottom: 0.6rem;
+    }
+
+    & > *:last-child {
+      flex: 1;
+    }
+  }
+
+  [data-box='checkbox'] {
+    align-self: flex-start;
+  }
+
+  &__group {
+    display: flex;
+    gap: 2.4rem;
+    flex: 1;
+
+    & > * {
+      flex-basis: 50%;
+    }
+
+    [data-box='input-box'] {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+
+      & > *:last-child {
+        flex: 1;
+      }
+    }
+  }
+}
