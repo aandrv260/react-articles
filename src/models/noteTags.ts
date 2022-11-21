@@ -1,7 +1,8 @@
 export interface NoteTagInfo {
-  text: string;
+  label: string;
+  id: number;
 }
 
 export interface NoteTagsInfo {
-  tags: string[];
+  tags: NoteTagInfo[];
 }

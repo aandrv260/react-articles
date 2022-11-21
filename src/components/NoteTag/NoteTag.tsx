@@ -4,7 +4,7 @@ import styles from './NoteTag.module.scss';
 type NoteTagProps = NoteTagInfo;
 
 const NoteTag = (props: NoteTagProps) => {
-  return <span className={styles['tag']}>{props.text}</span>;
+  return <span className={styles['tag']}>{props.label}</span>;
 };
 
 export default NoteTag;

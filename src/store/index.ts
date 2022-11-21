@@ -7,21 +7,22 @@ interface NotesSlice {
 
 const initialState: NotesSlice = {
   notes: [
-    {
-      heading: 'Centering a div',
-      tags: ['CSS', 'HTML'],
-      isFeatured: true,
-    },
-
-    {
-      heading: 'Centering a div',
-      tags: ['CSS', 'HTML'],
-    },
-
-    {
-      heading: 'Centering a div',
-      tags: ['CSS', 'HTML'],
-    },
+    // {
+    //   heading: 'Centering a div',
+    //   tags: [
+    //     { label: 'CSS', id: 1 },
+    //     { label: 'HTML', id: 2 },
+    //   ],
+    //   isFeatured: true,
+    // },
+    // {
+    //   heading: 'Centering a div',
+    //   tags: ['CSS', 'HTML'],
+    // },
+    // {
+    //   heading: 'Centering a div',
+    //   tags: ['CSS', 'HTML'],
+    // },
   ],
 };
 

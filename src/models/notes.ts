@@ -1,6 +1,8 @@
+import { NoteTagInfo } from './noteTags';
+
 export interface NoteInfo {
   heading: string;
-  tags?: string[];
+  tags?: NoteTagInfo[];
   isFeatured?: boolean;
 }
 
