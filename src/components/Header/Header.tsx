@@ -1,24 +1,24 @@
 import React from 'react';
-import { ButtonClickMouseEvent } from '../../models/form';
+import { HeaderInfo } from '../../models/header';
 import Button from '../Button/Button';
 import styles from './Header.module.scss';
 
-interface HeaderProps {
-  heading: string;
-  button: {
-    text: string;
-    onClick: (event: ButtonClickMouseEvent) => void;
-  };
-}
+type HeaderProps = HeaderInfo;
 
-const Header: React.FC<HeaderProps> = ({ heading, button }) => {
+const Header: React.FC<HeaderProps> = ({ heading, buttons }) => {
   return (
     <header className={styles['header']}>
       <h1>{heading}</h1>
 
-      <div className={styles['header__btns']}>
-        <Button onClick={button.onClick}>{button.text}</Button>
-      </div>
+      {buttons && buttons?.length > 0 && (
+        <div className={styles['header__btns']}>
+          {buttons.map(button => (
+            <Button onClick={button.onClick} designStyle={button.designStyle} key={Math.random()}>
+              {button.text}
+            </Button>
+          ))}
+        </div>
+      )}
     </header>
   );
 };

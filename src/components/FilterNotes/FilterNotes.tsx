@@ -1,7 +1,7 @@
-import React, { useReducer, useState } from 'react';
-import { InputChangeEvent } from '../../models/form';
+import { useState } from 'react';
 import InputBox from '../InputBox/InputBox';
-import styles from './FilterNotes.module.scss';
+import Form from '../Form/Form';
+import FormGroup from '../FormGroup/FormGroup';
 
 const FilterNotes = () => {
   const [title, setTitle] = useState<string>('3');
@@ -12,23 +12,26 @@ const FilterNotes = () => {
   };
 
   return (
-    <form className={`${styles['form-filter']}`}>
-      <InputBox
-        id="title-filter"
-        type={'text'}
-        label="Title"
-        value={title}
-        onChange={titleChangeHandler}
-      />
+    <Form>
+      <FormGroup>
+        <InputBox
+          id="title-filter"
+          type={'text'}
+          label="Title"
+          value={title}
+          onChange={titleChangeHandler}
+        />
 
-      <InputBox
-        id="tag-filter"
-        type={'text'}
-        label="Tag"
-        value={title}
-        onChange={titleChangeHandler}
-      />
-    </form>
+        <InputBox
+          id="tag-filter"
+          type={'text'}
+          label="Tag"
+          value={title}
+          onChange={titleChangeHandler}
+          inputElementType="multi-select"
+        />
+      </FormGroup>
+    </Form>
   );
 };
 

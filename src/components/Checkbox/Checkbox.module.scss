@@ -1,0 +1,53 @@
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  .default-checkbox {
+    display: none;
+
+    &:checked + .custom-checkbox {
+      background-color: var(--color-main);
+
+      &::before {
+        display: block;
+      }
+    }
+  }
+
+  // It is a label to be able to check the checkbox on click over the text
+  label.checkbox-label-text {
+    font-size: 1.4rem;
+    color: #000;
+  }
+}
+
+.custom-checkbox {
+  --size: 25px;
+
+  position: relative;
+  height: var(--size);
+  width: var(--size);
+  border-radius: var(--border-radius-default);
+  border: 1px solid var(--color-default-grey);
+  transition: all 0.2s;
+  cursor: pointer;
+
+  &::before {
+    $border: 2px solid var(--color-text-white);
+
+    content: '';
+    display: none;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    height: 8px;
+    width: 12px;
+
+    border: {
+      left: $border;
+      bottom: $border;
+    }
+  }
+}
