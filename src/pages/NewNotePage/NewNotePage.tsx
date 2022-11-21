@@ -1,21 +1,44 @@
-import PageContainer from '../../components/PageContainer/PageContainer';
-import CreatableReactSelect from 'react-select/creatable';
-import { HeaderInfo } from '../../models/header';
-import { ButtonClickMouseEvent } from '../../models/form';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+import { notesActions } from '../../store/index';
+
+import PageContainer from '../../components/PageContainer/PageContainer';
 import Form from '../../components/Form/Form';
 import InputBox from '../../components/InputBox/InputBox';
-import { useState, useMemo } from 'react';
 import FormGroup from '../../components/FormGroup/FormGroup';
 import Checkbox from '../../components/Checkbox/Checkbox';
 import Button from '../../components/Button/Button';
 
-const NewNotePage = () => {
-  const [title, setTitle] = useState<string>('');
-  const [checkboxIsChecked, setCheckboxIsChecked] = useState<boolean>(false);
-  const navigate = useNavigate();
+import useNewNote from '../../hooks/useNewNote';
 
-  // alert(checkboxIsChecked);
+import { ButtonClickMouseEvent } from '../../models/form';
+import { HeaderInfo } from '../../models/header';
+import { NoteTagInfo } from '../../models/noteTags';
+
+type ChangeEvent<T> = React.ChangeEvent<T>;
+
+const NewNotePage = () => {
+  const { createNoteForm, dispatchForm } = useNewNote();
+  const navigate = useNavigate();
+  const dispatchNote = useDispatch();
+
+  const titleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatchForm({ type: 'CHANGE_TITLE', value: event.currentTarget.value });
+  };
+
+  const checkboxChangeHandler = () => {
+    dispatchForm({ type: 'CHANGE_CHECKBOX_STATE' });
+  };
+
+  const descriptionChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatchForm({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
+  };
+
+  const createNoteHandler = (tags: NoteTagInfo[]) => {
+    dispatchForm({ type: 'CHANGE_TAGS', tags });
+  };
 
   const headerInfo: HeaderInfo = useMemo(
     () => ({
@@ -36,13 +59,7 @@ const NewNotePage = () => {
     [navigate]
   );
 
-  const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.currentTarget.value);
-  };
-
-  const checkboxChangeHandler = () => {
-    setCheckboxIsChecked(isChecked => !isChecked);
-  };
+  console.log('createNoteForm', createNoteForm);
 
   return (
     <PageContainer header={headerInfo}>
@@ -52,25 +69,30 @@ const NewNotePage = () => {
             id="note-title"
             type={'text'}
             label="Title"
-            value={title}
+            value={createNoteForm.title}
             onChange={titleChangeHandler}
           />
 
           <InputBox
             id="note-tags"
             label="Tags"
-            onChange={titleChangeHandler}
+            onMultiSelectChange={createNoteHandler}
             inputElementType="multi-select"
           />
         </FormGroup>
-        <Checkbox checked={checkboxIsChecked} onChange={checkboxChangeHandler} label="Featured" />
+
+        <Checkbox
+          checked={createNoteForm.checkboxIsChecked}
+          onChange={checkboxChangeHandler}
+          label="Featured"
+        />
 
         <InputBox
           id="note-description"
           type={'text'}
           label="Description"
-          value={title}
-          onChange={titleChangeHandler}
+          value={createNoteForm.description}
+          onChange={descriptionChangeHandler}
           inputElementType="textarea"
         />
       </Form>
