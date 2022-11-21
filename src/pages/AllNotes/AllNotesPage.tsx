@@ -9,23 +9,7 @@ import { NotesInfo } from '../../models/notes';
 import { HeaderInfo } from '../../models/header';
 import { useNavigate } from 'react-router-dom';
 
-const testNotes: NotesInfo = [
-  {
-    heading: 'Centering a div',
-    tags: ['CSS', 'HTML'],
-    isFeatured: true,
-  },
-
-  {
-    heading: 'Centering a div',
-    tags: ['CSS', 'HTML'],
-  },
-
-  {
-    heading: 'Centering a div',
-    tags: ['CSS', 'HTML'],
-  },
-];
+const testNotes: NotesInfo = [];
 
 const AllNotesPage = () => {
   const navigate = useNavigate();
