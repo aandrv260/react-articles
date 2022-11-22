@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -16,6 +16,7 @@ import useNewNote from '../../hooks/useNewNote';
 import { ButtonClickMouseEvent } from '../../models/form';
 import { HeaderInfo } from '../../models/header';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
+import Feedback from '../../components/Feedback/Feedback';
 
 const NewNotePage = () => {
   const {
@@ -25,7 +26,9 @@ const NewNotePage = () => {
     checkboxChangeHandler,
     clearFormHandler,
     descriptionChangeHandler,
+    isNoteCreatedChangeHandler,
     multiSelectValue,
+    feedbackVisibilityChangeHandler,
   } = useNewNote();
 
   const navigate = useNavigate();
@@ -34,8 +37,11 @@ const NewNotePage = () => {
   const createNoteHandler = useCallback(
     (event: ButtonClickMouseEvent) => {
       dispatchNote(notesActions.create(newNoteForm));
+      isNoteCreatedChangeHandler();
+      feedbackVisibilityChangeHandler(true);
+      // setIsNoteCreated(true);
     },
-    [dispatchNote, newNoteForm]
+    [dispatchNote, newNoteForm, isNoteCreatedChangeHandler, feedbackVisibilityChangeHandler]
   );
 
   const headerInfo: HeaderInfo = useMemo(
@@ -60,52 +66,62 @@ const NewNotePage = () => {
   console.log('newNoteForm', newNoteForm);
 
   return (
-    <PageContainer header={headerInfo}>
-      <Form hasGroups>
-        <FormGroup>
+    <>
+      <Feedback
+        status="success"
+        buttons={[]}
+        message="Note created"
+        isVisible={!!newNoteForm.isFeedbackVisible}
+        setVisibility={feedbackVisibilityChangeHandler}
+      />
+
+      <PageContainer header={headerInfo}>
+        <Form hasGroups>
+          <FormGroup>
+            <InputBox
+              id="note-title"
+              type={'text'}
+              label="Title"
+              value={newNoteForm.heading}
+              onChange={headingChangeHandler}
+            />
+
+            <InputBox
+              id="note-tags"
+              label="Tags"
+              multiSelectValue={multiSelectValue}
+              onMultiSelectChange={tagsChangeHandler}
+              inputElementType="multi-select"
+            />
+          </FormGroup>
+
+          <Checkbox
+            checked={!!newNoteForm.isFeatured}
+            onChange={checkboxChangeHandler}
+            label="Featured"
+          />
+
           <InputBox
-            id="note-title"
+            id="note-description"
             type={'text'}
-            label="Title"
-            value={newNoteForm.heading}
-            onChange={headingChangeHandler}
+            label="Description"
+            value={newNoteForm.description}
+            onChange={descriptionChangeHandler}
+            inputElementType="textarea"
           />
+        </Form>
 
-          <InputBox
-            id="note-tags"
-            label="Tags"
-            multiSelectValue={multiSelectValue}
-            onMultiSelectChange={tagsChangeHandler}
-            inputElementType="multi-select"
-          />
-        </FormGroup>
+        <ButtonGroup>
+          <Button type="button" onClick={createNoteHandler}>
+            Create
+          </Button>
 
-        <Checkbox
-          checked={!!newNoteForm.isFeatured}
-          onChange={checkboxChangeHandler}
-          label="Featured"
-        />
-
-        <InputBox
-          id="note-description"
-          type={'text'}
-          label="Description"
-          value={newNoteForm.description}
-          onChange={descriptionChangeHandler}
-          inputElementType="textarea"
-        />
-      </Form>
-
-      <ButtonGroup>
-        <Button type="button" onClick={createNoteHandler}>
-          Create
-        </Button>
-
-        <Button type="button" designStyle="outline" onClick={clearFormHandler}>
-          Clear
-        </Button>
-      </ButtonGroup>
-    </PageContainer>
+          <Button type="button" designStyle="outline" onClick={clearFormHandler}>
+            Clear
+          </Button>
+        </ButtonGroup>
+      </PageContainer>
+    </>
   );
 };
 

@@ -7,20 +7,30 @@ type ActionType =
   | 'CHANGE_IS_FEATURED'
   | 'CHANGE_TAGS'
   | 'CHANGE_DESCRIPTION'
+  | 'SET_NOTE_CREATED'
+  | 'SET_FEEDBACK_VISIBILITY'
   | 'CLEAR_FORM';
 
 interface NewNoteAction {
   type: ActionType;
   value?: string;
+  feedbackVisibility?: boolean;
   tags?: NoteTagInfo[];
 }
 
-type FormReducer = (state: Note, action: NewNoteAction) => Note;
+interface InitialCreateNoteState extends Note {
+  isNoteCreated?: boolean;
+  isFeedbackVisible?: boolean;
+}
+
+type FormReducer = (state: InitialCreateNoteState, action: NewNoteAction) => InitialCreateNoteState;
 type ChangeEvent<T> = React.ChangeEvent<T>;
 
-const initialState: Note = {
+const initialState: InitialCreateNoteState = {
   heading: '',
   isFeatured: false,
+  isNoteCreated: false,
+  isFeedbackVisible: false,
   description: '',
   tags: [],
 };
@@ -51,6 +61,18 @@ const newNoteReducer: FormReducer = (state, action) => {
         description: action.value || action.value === '' ? action.value : state.description,
       };
 
+    case 'SET_NOTE_CREATED':
+      return {
+        ...state,
+        isNoteCreated: true,
+      };
+
+    case 'SET_FEEDBACK_VISIBILITY':
+      return {
+        ...state,
+        isFeedbackVisible: !!action.feedbackVisibility,
+      };
+
     case 'CLEAR_FORM':
       return initialState;
 
@@ -78,6 +100,14 @@ const useNewNote = () => {
     dispatch({ type: 'CHANGE_TAGS', tags });
   };
 
+  const isNoteCreatedChangeHandler = () => {
+    dispatch({ type: 'SET_NOTE_CREATED' });
+  };
+
+  const feedbackVisibilityChangeHandler = (isVisible: boolean) => {
+    dispatch({ type: 'SET_FEEDBACK_VISIBILITY', feedbackVisibility: isVisible });
+  };
+
   const clearFormHandler = () => {
     dispatch({ type: 'CLEAR_FORM' });
   };
@@ -92,7 +122,9 @@ const useNewNote = () => {
     descriptionChangeHandler,
     tagsChangeHandler,
     clearFormHandler,
+    isNoteCreatedChangeHandler,
     multiSelectValue,
+    feedbackVisibilityChangeHandler,
   };
 };
 

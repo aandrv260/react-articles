@@ -32,7 +32,9 @@ export const notesSlice = createSlice({
   reducers: {
     delete() {},
 
-    create(curState, action: PayloadAction<Note>) {},
+    create(curState, action: PayloadAction<Note>) {
+      curState.notes.push(action.payload);
+    },
   },
 });
 
