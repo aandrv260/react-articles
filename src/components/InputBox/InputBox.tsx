@@ -1,5 +1,5 @@
 import { InputChangeEvent } from '../../models/form';
-import MultiSelect from 'react-select/creatable';
+import Select from 'react-select/creatable';
 import styles from './InputBox.module.scss';
 import { useMemo } from 'react';
 import { NoteTagInfo } from '../../models/noteTags';
@@ -37,7 +37,7 @@ const InputBox: React.FC<InputBoxProps> = props => {
       <label htmlFor={id}>{label}</label>
 
       {inputElementType === 'multi-select' && (
-        <MultiSelect
+        <Select
           classNamePrefix="custom-multi-select"
           isMulti
           value={multiSelectValue}

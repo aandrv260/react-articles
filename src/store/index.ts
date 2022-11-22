@@ -1,29 +1,20 @@
 import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
-import { Note, NotesInfo } from '../models/notes';
+import { Note, NoteFilters, NotesInfo } from '../models/notes';
+import { NoteTagInfo } from '../models/noteTags';
+import { NotesSlice } from '../models/store';
 
-interface NotesSlice {
-  notes: NotesInfo;
-}
+// interface FilterChangeHandler {
+//   value: string;
+
+// }
 
 const initialState: NotesSlice = {
-  notes: [
-    // {
-    //   heading: 'Centering a div',
-    //   tags: [
-    //     { label: 'CSS', id: 1 },
-    //     { label: 'HTML', id: 2 },
-    //   ],
-    //   isFeatured: true,
-    // },
-    // {
-    //   heading: 'Centering a div',
-    //   tags: ['CSS', 'HTML'],
-    // },
-    // {
-    //   heading: 'Centering a div',
-    //   tags: ['CSS', 'HTML'],
-    // },
-  ],
+  notes: [],
+  filteredNotes: [],
+  filters: {
+    heading: '3',
+    tags: [],
+  },
 };
 
 export const notesSlice = createSlice({
@@ -31,6 +22,16 @@ export const notesSlice = createSlice({
   initialState,
   reducers: {
     delete() {},
+
+    filterChangeHandler(curState, action: PayloadAction<string | NoteTagInfo[]>) {
+      const filterValue = action.payload;
+
+      if (typeof filterValue === 'string') {
+        curState.filters.heading = filterValue;
+      } else {
+        curState.filters.tags = [...filterValue];
+      }
+    },
 
     create(curState, action: PayloadAction<Note>) {
       curState.notes.push(action.payload);
