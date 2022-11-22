@@ -2,13 +2,6 @@ import { useReducer } from 'react';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 
-// interface NewNoteState {
-//   heading: string;
-//   isFeatured: boolean;
-//   description: string;
-//   tags: NoteTagInfo[];
-// }
-
 type ActionType =
   | 'CHANGE_HEADING'
   | 'CHANGE_IS_FEATURED'
@@ -23,6 +16,7 @@ interface NewNoteAction {
 }
 
 type FormReducer = (state: Note, action: NewNoteAction) => Note;
+type ChangeEvent<T> = React.ChangeEvent<T>;
 
 const initialState: Note = {
   heading: '',
@@ -36,7 +30,7 @@ const newNoteReducer: FormReducer = (state, action) => {
     case 'CHANGE_HEADING':
       return {
         ...state,
-        heading: action.value ? action.value : state.heading,
+        heading: action.value || action.value === '' ? action.value : state.heading,
       };
 
     case 'CHANGE_IS_FEATURED':
@@ -54,10 +48,9 @@ const newNoteReducer: FormReducer = (state, action) => {
     case 'CHANGE_DESCRIPTION':
       return {
         ...state,
-        description: action.value ? action.value : state.description,
+        description: action.value || action.value === '' ? action.value : state.description,
       };
 
-    // Add a clear form button
     case 'CLEAR_FORM':
       return initialState;
 
@@ -67,11 +60,39 @@ const newNoteReducer: FormReducer = (state, action) => {
 };
 
 const useNewNote = () => {
-  const [state, dispatch] = useReducer(newNoteReducer, initialState);
+  const [form, dispatch] = useReducer(newNoteReducer, initialState);
+
+  const headingChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
+  };
+
+  const checkboxChangeHandler = () => {
+    dispatch({ type: 'CHANGE_IS_FEATURED' });
+  };
+
+  const descriptionChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
+  };
+
+  const tagsChangeHandler = (tags: NoteTagInfo[]) => {
+    dispatch({ type: 'CHANGE_TAGS', tags });
+  };
+
+  const clearFormHandler = () => {
+    dispatch({ type: 'CLEAR_FORM' });
+  };
+
+  const multiSelectValue = form.tags?.map(tag => ({ label: tag.label, value: tag.id })) || [];
 
   return {
-    newNoteForm: state,
+    newNoteForm: form,
     dispatchForm: dispatch,
+    headingChangeHandler,
+    checkboxChangeHandler,
+    descriptionChangeHandler,
+    tagsChangeHandler,
+    clearFormHandler,
+    multiSelectValue,
   };
 };
 

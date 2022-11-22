@@ -15,35 +15,21 @@ import useNewNote from '../../hooks/useNewNote';
 
 import { ButtonClickMouseEvent } from '../../models/form';
 import { HeaderInfo } from '../../models/header';
-import { NoteTagInfo } from '../../models/noteTags';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 
-type ChangeEvent<T> = React.ChangeEvent<T>;
-
 const NewNotePage = () => {
-  const { newNoteForm, dispatchForm } = useNewNote();
+  const {
+    newNoteForm,
+    headingChangeHandler,
+    tagsChangeHandler,
+    checkboxChangeHandler,
+    clearFormHandler,
+    descriptionChangeHandler,
+    multiSelectValue,
+  } = useNewNote();
+
   const navigate = useNavigate();
   const dispatchNote = useDispatch();
-
-  const titleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatchForm({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
-  };
-
-  const checkboxChangeHandler = () => {
-    dispatchForm({ type: 'CHANGE_IS_FEATURED' });
-  };
-
-  const descriptionChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatchForm({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
-  };
-
-  const changeTagsHandler = (tags: NoteTagInfo[]) => {
-    dispatchForm({ type: 'CHANGE_TAGS', tags });
-  };
-
-  const clearFormHandler = () => {
-    dispatchForm({ type: 'CLEAR_FORM' });
-  };
 
   const createNoteHandler = useCallback(
     (event: ButtonClickMouseEvent) => {
@@ -82,13 +68,14 @@ const NewNotePage = () => {
             type={'text'}
             label="Title"
             value={newNoteForm.heading}
-            onChange={titleChangeHandler}
+            onChange={headingChangeHandler}
           />
 
           <InputBox
             id="note-tags"
             label="Tags"
-            onMultiSelectChange={changeTagsHandler}
+            multiSelectValue={multiSelectValue}
+            onMultiSelectChange={tagsChangeHandler}
             inputElementType="multi-select"
           />
         </FormGroup>
