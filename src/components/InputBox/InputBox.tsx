@@ -2,6 +2,7 @@ import { InputChangeEvent } from '../../models/form';
 import MultiSelect from 'react-select/creatable';
 import styles from './InputBox.module.scss';
 import { useMemo } from 'react';
+import { NoteTagInfo } from '../../models/noteTags';
 
 interface InputBoxProps {
   id: string;
@@ -9,13 +10,27 @@ interface InputBoxProps {
   type?: React.HTMLInputTypeAttribute;
   placeholder?: string;
   value?: string | number;
+  multiSelectValue?: {
+    label: string;
+    value: number;
+  }[];
   onChange?: InputChangeEvent;
-  // isTextarea?: boolean;
+  onMultiSelectChange?: (data: NoteTagInfo[]) => void;
   inputElementType?: 'input' | 'textarea' | 'multi-select';
 }
 
 const InputBox: React.FC<InputBoxProps> = props => {
-  const { id, label, type, placeholder, value, onChange, inputElementType } = props;
+  const {
+    id,
+    label,
+    type,
+    placeholder,
+    value,
+    onChange,
+    inputElementType,
+    multiSelectValue,
+    onMultiSelectChange,
+  } = props;
 
   return (
     <div className={styles['input-box']} data-box="input-box">
@@ -25,8 +40,17 @@ const InputBox: React.FC<InputBoxProps> = props => {
         <MultiSelect
           classNamePrefix="custom-multi-select"
           isMulti
-          value={value}
+          value={multiSelectValue}
           inputId={id}
+          onChange={tags => {
+            if (onMultiSelectChange) {
+              onMultiSelectChange(
+                tags.map(tag => {
+                  return { label: tag.label, id: tag.value };
+                })
+              );
+            }
+          }}
           styles={{
             control: (baseStyles, state) => {
               return {
