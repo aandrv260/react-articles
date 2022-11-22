@@ -1,16 +1,17 @@
 import { useReducer } from 'react';
+import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 
-interface NewNoteState {
-  title: string;
-  checkboxIsChecked: boolean;
-  description: string;
-  tags: NoteTagInfo[];
-}
+// interface NewNoteState {
+//   heading: string;
+//   isFeatured: boolean;
+//   description: string;
+//   tags: NoteTagInfo[];
+// }
 
 type ActionType =
-  | 'CHANGE_TITLE'
-  | 'CHANGE_CHECKBOX_STATE'
+  | 'CHANGE_HEADING'
+  | 'CHANGE_IS_FEATURED'
   | 'CHANGE_TAGS'
   | 'CHANGE_DESCRIPTION'
   | 'CLEAR_FORM';
@@ -21,27 +22,27 @@ interface NewNoteAction {
   tags?: NoteTagInfo[];
 }
 
-type FormReducer = (state: NewNoteState, action: NewNoteAction) => NewNoteState;
+type FormReducer = (state: Note, action: NewNoteAction) => Note;
 
-const initialState: NewNoteState = {
-  title: '',
-  checkboxIsChecked: false,
+const initialState: Note = {
+  heading: '',
+  isFeatured: false,
   description: '',
   tags: [],
 };
 
 const newNoteReducer: FormReducer = (state, action) => {
   switch (action.type) {
-    case 'CHANGE_TITLE':
+    case 'CHANGE_HEADING':
       return {
         ...state,
-        title: action.value ? action.value : state.title,
+        heading: action.value ? action.value : state.heading,
       };
 
-    case 'CHANGE_CHECKBOX_STATE':
+    case 'CHANGE_IS_FEATURED':
       return {
         ...state,
-        checkboxIsChecked: !state.checkboxIsChecked,
+        isFeatured: !state.isFeatured,
       };
 
     case 'CHANGE_TAGS':
@@ -69,7 +70,7 @@ const useNewNote = () => {
   const [state, dispatch] = useReducer(newNoteReducer, initialState);
 
   return {
-    createNoteForm: state,
+    newNoteForm: state,
     dispatchForm: dispatch,
   };
 };

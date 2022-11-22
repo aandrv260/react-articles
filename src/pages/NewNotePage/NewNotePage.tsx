@@ -20,16 +20,16 @@ import { NoteTagInfo } from '../../models/noteTags';
 type ChangeEvent<T> = React.ChangeEvent<T>;
 
 const NewNotePage = () => {
-  const { createNoteForm, dispatchForm } = useNewNote();
+  const { newNoteForm, dispatchForm } = useNewNote();
   const navigate = useNavigate();
   const dispatchNote = useDispatch();
 
   const titleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatchForm({ type: 'CHANGE_TITLE', value: event.currentTarget.value });
+    dispatchForm({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
   };
 
   const checkboxChangeHandler = () => {
-    dispatchForm({ type: 'CHANGE_CHECKBOX_STATE' });
+    dispatchForm({ type: 'CHANGE_IS_FEATURED' });
   };
 
   const descriptionChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +46,9 @@ const NewNotePage = () => {
       buttons: [
         {
           text: 'Add',
-          onClick: (event: ButtonClickMouseEvent) => {},
+          onClick: (event: ButtonClickMouseEvent) => {
+            dispatchNote(notesActions.create(newNoteForm));
+          },
         },
 
         {
@@ -56,10 +58,10 @@ const NewNotePage = () => {
         },
       ],
     }),
-    [navigate]
+    [navigate, dispatchNote, newNoteForm]
   );
 
-  console.log('createNoteForm', createNoteForm);
+  console.log('newNoteForm', newNoteForm);
 
   return (
     <PageContainer header={headerInfo}>
@@ -69,7 +71,7 @@ const NewNotePage = () => {
             id="note-title"
             type={'text'}
             label="Title"
-            value={createNoteForm.title}
+            value={newNoteForm.heading}
             onChange={titleChangeHandler}
           />
 
@@ -82,7 +84,7 @@ const NewNotePage = () => {
         </FormGroup>
 
         <Checkbox
-          checked={createNoteForm.checkboxIsChecked}
+          checked={!!newNoteForm.isFeatured}
           onChange={checkboxChangeHandler}
           label="Featured"
         />
@@ -91,7 +93,7 @@ const NewNotePage = () => {
           id="note-description"
           type={'text'}
           label="Description"
-          value={createNoteForm.description}
+          value={newNoteForm.description}
           onChange={descriptionChangeHandler}
           inputElementType="textarea"
         />

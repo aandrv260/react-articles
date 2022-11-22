@@ -6,4 +6,8 @@ export interface NoteInfo {
   isFeatured?: boolean;
 }
 
+export interface Note extends NoteInfo {
+  description: string;
+}
+
 export type NotesInfo = NoteInfo[];

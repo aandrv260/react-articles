@@ -1,5 +1,5 @@
-import { createSlice, configureStore } from '@reduxjs/toolkit';
-import { NotesInfo } from '../models/notes';
+import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
+import { Note, NotesInfo } from '../models/notes';
 
 interface NotesSlice {
   notes: NotesInfo;
@@ -32,7 +32,7 @@ export const notesSlice = createSlice({
   reducers: {
     delete() {},
 
-    create(curState, action) {},
+    create(curState, action: PayloadAction<Note>) {},
   },
 });
 
