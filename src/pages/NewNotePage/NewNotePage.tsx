@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -16,6 +16,7 @@ import useNewNote from '../../hooks/useNewNote';
 import { ButtonClickMouseEvent } from '../../models/form';
 import { HeaderInfo } from '../../models/header';
 import { NoteTagInfo } from '../../models/noteTags';
+import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 
 type ChangeEvent<T> = React.ChangeEvent<T>;
 
@@ -36,9 +37,20 @@ const NewNotePage = () => {
     dispatchForm({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
   };
 
-  const createNoteHandler = (tags: NoteTagInfo[]) => {
+  const changeTagsHandler = (tags: NoteTagInfo[]) => {
     dispatchForm({ type: 'CHANGE_TAGS', tags });
   };
+
+  const clearFormHandler = () => {
+    dispatchForm({ type: 'CLEAR_FORM' });
+  };
+
+  const createNoteHandler = useCallback(
+    (event: ButtonClickMouseEvent) => {
+      dispatchNote(notesActions.create(newNoteForm));
+    },
+    [dispatchNote, newNoteForm]
+  );
 
   const headerInfo: HeaderInfo = useMemo(
     () => ({
@@ -46,9 +58,7 @@ const NewNotePage = () => {
       buttons: [
         {
           text: 'Add',
-          onClick: (event: ButtonClickMouseEvent) => {
-            dispatchNote(notesActions.create(newNoteForm));
-          },
+          onClick: createNoteHandler,
         },
 
         {
@@ -58,7 +68,7 @@ const NewNotePage = () => {
         },
       ],
     }),
-    [navigate, dispatchNote, newNoteForm]
+    [navigate, createNoteHandler]
   );
 
   console.log('newNoteForm', newNoteForm);
@@ -78,7 +88,7 @@ const NewNotePage = () => {
           <InputBox
             id="note-tags"
             label="Tags"
-            onMultiSelectChange={createNoteHandler}
+            onMultiSelectChange={changeTagsHandler}
             inputElementType="multi-select"
           />
         </FormGroup>
@@ -99,7 +109,15 @@ const NewNotePage = () => {
         />
       </Form>
 
-      <Button type="button">Create</Button>
+      <ButtonGroup>
+        <Button type="button" onClick={createNoteHandler}>
+          Create
+        </Button>
+
+        <Button type="button" designStyle="outline" onClick={clearFormHandler}>
+          Clear
+        </Button>
+      </ButtonGroup>
     </PageContainer>
   );
 };
