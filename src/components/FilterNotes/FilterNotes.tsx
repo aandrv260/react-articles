@@ -1,17 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import InputBox from '../InputBox/InputBox';
 import Form from '../Form/Form';
 import FormGroup from '../FormGroup/FormGroup';
-import { NoteTagInfo } from '../../models/noteTags';
-import useTag from '../../hooks/useTag';
+import useFilter from '../../hooks/useFilter';
 
 const FilterNotes = () => {
-  const [title, setTitle] = useState<string>('');
-  const { multiSelectValue, setTagsFiltered } = useTag();
-
-  const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.currentTarget.value);
-  };
+  const { filters, multiSelectValue, titleChangeHandler, tagsChangeHandler } = useFilter();
 
   return (
     <Form>
@@ -20,7 +14,7 @@ const FilterNotes = () => {
           id="title-filter"
           type={'text'}
           label="Title"
-          value={title}
+          value={filters.heading}
           onChange={titleChangeHandler}
         />
 
@@ -29,7 +23,7 @@ const FilterNotes = () => {
           type={'text'}
           label="Tag"
           multiSelectValue={multiSelectValue}
-          onMultiSelectChange={setTagsFiltered}
+          onMultiSelectChange={tagsChangeHandler}
           inputElementType="multi-select"
         />
       </FormGroup>

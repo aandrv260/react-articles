@@ -6,6 +6,11 @@ export interface NoteInfo {
   isFeatured?: boolean;
 }
 
+export interface NoteFilters {
+  heading: string;
+  tags: NoteTagInfo[];
+}
+
 export interface Note extends NoteInfo {
   description: string;
 }
