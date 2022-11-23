@@ -4,7 +4,7 @@ import Header from '../Header/Header';
 
 interface PageContainerProps {
   header?: HeaderInfo;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /** 

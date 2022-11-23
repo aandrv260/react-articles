@@ -4,16 +4,19 @@ import styles from './InputBox.module.scss';
 import { useMemo } from 'react';
 import { NoteTagInfo } from '../../models/noteTags';
 
+type SelectTag = {
+  label: string;
+  value: number;
+};
+
 interface InputBoxProps {
   id: string;
   label: string;
   type?: React.HTMLInputTypeAttribute;
   placeholder?: string;
   value?: string | number;
-  multiSelectValue?: {
-    label: string;
-    value: number;
-  }[];
+  options?: SelectTag[];
+  multiSelectValue?: SelectTag[];
   onChange?: InputChangeEvent;
   onMultiSelectChange?: (data: NoteTagInfo[]) => void;
   inputElementType?: 'input' | 'textarea' | 'multi-select';
@@ -27,6 +30,7 @@ const InputBox: React.FC<InputBoxProps> = props => {
     placeholder,
     value,
     onChange,
+    options,
     inputElementType,
     multiSelectValue,
     onMultiSelectChange,
@@ -42,6 +46,8 @@ const InputBox: React.FC<InputBoxProps> = props => {
           isMulti
           value={multiSelectValue}
           inputId={id}
+          options={options}
+          createOptionPosition="first"
           onChange={tags => {
             if (onMultiSelectChange) {
               onMultiSelectChange(

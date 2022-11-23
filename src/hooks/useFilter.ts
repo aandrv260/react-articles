@@ -3,24 +3,30 @@ import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
 import { notesActions } from '../store';
 
+const changeValueToIdInTagsArr = (tags: NoteTagInfo[]) => {
+  return tags.map(tag => ({ label: tag.label, value: tag.id }));
+};
+
 const useFilter = () => {
   const filters = useSelector((state: NotesSlice) => state.filters);
+  const allTags = useSelector((state: NotesSlice) => state.allTags);
   const dispatchFilters = useDispatch();
 
-  const multiSelectValue = filters.tags.map(tag => ({ label: tag.label, value: tag.id }));
+  // const multiSelectValue = filters.tags.map(tag => ({ label: tag.label, value: tag.id }));
+  const multiSelectValue = changeValueToIdInTagsArr(filters.tags);
+  const initialTagOptions = changeValueToIdInTagsArr(allTags);
 
   const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatchFilters(notesActions.filterChangeHandler(event.currentTarget.value));
-    dispatchFilters(notesActions.filter(event.currentTarget.value));
   };
 
   const tagsChangeHandler = (tags: NoteTagInfo[]) => {
     dispatchFilters(notesActions.filterChangeHandler(tags));
-    dispatchFilters(notesActions.filter(tags));
   };
 
   return {
     filters,
+    initialTagOptions,
     multiSelectValue,
     titleChangeHandler,
     tagsChangeHandler,

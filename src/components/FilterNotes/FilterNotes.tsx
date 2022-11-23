@@ -1,11 +1,13 @@
-import { useState, useRef } from 'react';
 import InputBox from '../InputBox/InputBox';
 import Form from '../Form/Form';
 import FormGroup from '../FormGroup/FormGroup';
 import useFilter from '../../hooks/useFilter';
 
 const FilterNotes = () => {
-  const { filters, multiSelectValue, titleChangeHandler, tagsChangeHandler } = useFilter();
+  const { filters, multiSelectValue, titleChangeHandler, tagsChangeHandler, initialTagOptions } =
+    useFilter();
+
+  console.log(initialTagOptions);
 
   return (
     <Form>
@@ -22,6 +24,7 @@ const FilterNotes = () => {
           id="tag-filter"
           type={'text'}
           label="Tag"
+          options={initialTagOptions}
           multiSelectValue={multiSelectValue}
           onMultiSelectChange={tagsChangeHandler}
           inputElementType="multi-select"
