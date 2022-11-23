@@ -1,14 +1,8 @@
 import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
-import { Note, NoteInfo } from '../models/notes';
+import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
-import {
-  areBothFiltersApplied,
-  areFiltersEmpty,
-  filterNotes,
-  isThereHeadingFilterMatch,
-  isThereTagsFilterMatch,
-} from './notesFiltersUtils';
+import { filterNotes } from './notesFiltersUtils';
 
 type Filter = string | NoteTagInfo[];
 
@@ -19,17 +13,17 @@ const testNotes = [
     tags: [
       {
         label: 'CSS',
-        id: 1,
+        id: Math.random(),
       },
 
       {
         label: 'HTML',
-        id: 2,
+        id: Math.random(),
       },
 
       {
         label: 'Selectors',
-        id: 3,
+        id: Math.random(),
       },
     ],
   },
@@ -40,17 +34,17 @@ const testNotes = [
     tags: [
       {
         label: 'CSS',
-        id: 1,
+        id: Math.random(),
       },
 
       {
         label: 'HTML',
-        id: 2,
+        id: Math.random(),
       },
 
       {
         label: 'Flexbox',
-        id: 3,
+        id: Math.random(),
       },
     ],
   },
@@ -61,24 +55,33 @@ const testNotes = [
     tags: [
       {
         label: 'JS',
-        id: 1,
+        id: Math.random(),
       },
 
       {
         label: 'HTML',
-        id: 2,
+        id: Math.random(),
       },
 
       {
         label: 'Objects',
-        id: 3,
+        id: Math.random(),
       },
     ],
   },
 ];
 
+const allUniqueTags = new Set(testNotes.flatMap(note => note.tags).map(tag => tag.label));
+const tagsUnique = [...allUniqueTags].map(tag => ({
+  label: tag,
+  id: Math.random(),
+}));
+
+console.log('allTags from redux', allUniqueTags, tagsUnique);
+
 const initialState: NotesSlice = {
   notes: testNotes,
+  allTags: tagsUnique,
   filteredNotes: testNotes,
   filters: {
     heading: '',
@@ -90,7 +93,7 @@ export const notesSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {
-    delete() {},
+    delete(curState, action: PayloadAction<string | number>) {},
 
     filterChangeHandler(curState, action: PayloadAction<Filter>) {
       const filterValue = action.payload;
@@ -104,12 +107,9 @@ export const notesSlice = createSlice({
       curState.filteredNotes = filterNotes(curState);
     },
 
-    // filter(curState, action: PayloadAction<null>) {
-
-    // },
-
     create(curState, action: PayloadAction<Note>) {
       curState.notes.push(action.payload);
+      curState.filteredNotes = curState.notes;
     },
   },
 });

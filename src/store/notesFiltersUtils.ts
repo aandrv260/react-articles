@@ -43,6 +43,8 @@ export const getFilteredNotes: FilterNotes = (curState, setCondition) => {
   const allNotes = curState.notes;
   const newNotes: NoteInfo[] = [];
 
+  // Loop through each note and if it matches the condition
+  // from the callback, put it in the newNotes array
   allNotes.forEach(note => {
     const match = setCondition(curState, note);
 
@@ -58,8 +60,6 @@ export const filterNotes = (curState: WritableDraft<NotesSlice>) => {
 
   // If both filters are empty, display all notes
   if (areFiltersEmpty(curState)) {
-    // curState.filteredNotes = [...curState.notes];
-    // return;
     return curState.notes;
   }
 
@@ -77,8 +77,6 @@ export const filterNotes = (curState: WritableDraft<NotesSlice>) => {
   if (filters.heading !== '' && filters.tags.length > 0) {
     filteredNotes = getFilteredNotes(curState, areBothFiltersApplied);
   }
-
-  // curState.filteredNotes = newNotes;
 
   return filteredNotes;
 };
