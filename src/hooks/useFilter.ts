@@ -11,12 +11,10 @@ const useFilter = () => {
 
   const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatchFilters(notesActions.filterChangeHandler(event.currentTarget.value));
-    dispatchFilters(notesActions.filter(event.currentTarget.value));
   };
 
   const tagsChangeHandler = (tags: NoteTagInfo[]) => {
     dispatchFilters(notesActions.filterChangeHandler(tags));
-    dispatchFilters(notesActions.filter(tags));
   };
 
   return {
