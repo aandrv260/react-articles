@@ -2,7 +2,7 @@ import { NoteTagInfo } from './noteTags';
 
 export interface NoteInfo {
   heading: string;
-  tags?: NoteTagInfo[];
+  tags: NoteTagInfo[];
   isFeatured?: boolean;
 }
 

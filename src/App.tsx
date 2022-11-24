@@ -6,7 +6,7 @@ import NewNotePage from './pages/NewNotePage/NewNotePage';
 import NotePage from './pages/NotePage/NotePage';
 import PageNotFound from './pages/PageNotFound/PageNotFound';
 
-function App() {
+const App = () => {
   return (
     <Container>
       <Routes>
@@ -17,6 +17,6 @@ function App() {
       </Routes>
     </Container>
   );
-}
+};
 
 export default App;

@@ -1,6 +1,9 @@
 import { useReducer } from 'react';
+import { useSelector } from 'react-redux';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
+import { NotesSlice } from '../models/store';
+import { changeValueToIdInTagsArr } from '../utils/tags';
 
 type ActionType =
   | 'CHANGE_HEADING'
@@ -83,6 +86,8 @@ const newNoteReducer: FormReducer = (state, action) => {
 
 const useNewNote = () => {
   const [form, dispatch] = useReducer(newNoteReducer, initialState);
+  const allTags = useSelector((state: NotesSlice) => state.allTags);
+  const allTagsIdsToValueArr = changeValueToIdInTagsArr(allTags);
 
   const headingChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
@@ -124,6 +129,7 @@ const useNewNote = () => {
     clearFormHandler,
     isNoteCreatedChangeHandler,
     multiSelectValue,
+    allTagsIdsToValueArr,
     feedbackVisibilityChangeHandler,
   };
 };

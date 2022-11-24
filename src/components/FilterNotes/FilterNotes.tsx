@@ -4,10 +4,10 @@ import FormGroup from '../FormGroup/FormGroup';
 import useFilter from '../../hooks/useFilter';
 
 const FilterNotes = () => {
-  const { filters, multiSelectValue, titleChangeHandler, tagsChangeHandler, initialTagOptions } =
+  const { filters, multiSelectValue, titleChangeHandler, tagsChangeHandler, allTagsIdsToValueArr } =
     useFilter();
 
-  console.log(initialTagOptions);
+  // console.log(allTagsIdsToValueArr);
 
   return (
     <Form>
@@ -24,7 +24,7 @@ const FilterNotes = () => {
           id="tag-filter"
           type={'text'}
           label="Tag"
-          options={initialTagOptions}
+          options={allTagsIdsToValueArr}
           multiSelectValue={multiSelectValue}
           onMultiSelectChange={tagsChangeHandler}
           inputElementType="multi-select"

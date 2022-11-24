@@ -24,19 +24,37 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--color-text-main);
+  font-size: 1.4rem;
 }
 
 main {
   padding-bottom: 8rem;
 }
 
+ion-icon {
+  cursor: pointer;
+}
+
+ion-icon:hover {
+  opacity: 0.9;
+}
+
+input,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: 1px solid var(--color-default-grey);
+  border-radius: var(--border-radius-default);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--color-main);
+}
+
 .center-content {
   display: flex;
   align-items: center;
   justify-content: space-around;
-}
-
-.multi-select,
-.multi-select * {
-  cursor: pointer;
 }

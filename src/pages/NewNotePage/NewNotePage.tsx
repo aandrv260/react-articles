@@ -27,6 +27,7 @@ const NewNotePage = () => {
     clearFormHandler,
     descriptionChangeHandler,
     isNoteCreatedChangeHandler,
+    allTagsIdsToValueArr,
     multiSelectValue,
     feedbackVisibilityChangeHandler,
   } = useNewNote();
@@ -89,6 +90,7 @@ const NewNotePage = () => {
             <InputBox
               id="note-tags"
               label="Tags"
+              options={allTagsIdsToValueArr}
               multiSelectValue={multiSelectValue}
               onMultiSelectChange={tagsChangeHandler}
               inputElementType="multi-select"
