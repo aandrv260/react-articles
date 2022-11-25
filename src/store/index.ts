@@ -1,10 +1,4 @@
-import {
-  createSlice,
-  configureStore,
-  PayloadAction,
-  ThunkAction,
-  AnyAction,
-} from '@reduxjs/toolkit';
+import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
@@ -149,33 +143,6 @@ export const notesSlice = createSlice({
     },
   },
 });
-
-export const notesActions = notesSlice.actions;
-
-export const getDataFromLocalStorage = (): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
-  return dispatch => {
-    const storedData = localStorage.getItem('NOTES_INFO');
-
-    if (storedData) {
-      const parsedData: NotesSlice = JSON.parse(storedData);
-
-      dispatch(notesActions.mutateState(parsedData));
-    }
-  };
-};
-
-export const writeStateToLocalStorage = (
-  newNote: Note
-): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
-  return (dispatch, getState) => {
-    dispatch(notesActions.create(newNote));
-
-    const state = getState();
-    const stateToJSON = JSON.stringify(state);
-
-    localStorage.setItem('NOTES_INFO', stateToJSON);
-  };
-};
 
 const store = configureStore({
   reducer: notesSlice.reducer,

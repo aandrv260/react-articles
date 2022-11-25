@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
-import { notesActions } from '../store';
+import { notesActions } from '../store/notesActions';
 import { changeValueToIdInTagsArr } from '../utils/tags';
 
 const useFilter = () => {

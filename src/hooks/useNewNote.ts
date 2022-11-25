@@ -105,7 +105,7 @@ const useNewNote = () => {
     dispatch({ type: 'CHANGE_TAGS', tags });
   };
 
-  const isNoteCreatedChangeHandler = () => {
+  const setNoteStatusToCreated = () => {
     dispatch({ type: 'SET_NOTE_CREATED' });
   };
 
@@ -127,7 +127,7 @@ const useNewNote = () => {
     descriptionChangeHandler,
     tagsChangeHandler,
     clearFormHandler,
-    isNoteCreatedChangeHandler,
+    setNoteStatusToCreated,
     multiSelectValue,
     allTagsIdsToValueArr,
     feedbackVisibilityChangeHandler,

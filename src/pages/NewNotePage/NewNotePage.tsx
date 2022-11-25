@@ -2,8 +2,6 @@ import { useMemo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { notesActions, writeStateToLocalStorage } from '../../store/index';
-
 import PageContainer from '../../components/PageContainer/PageContainer';
 import Form from '../../components/Form/Form';
 import InputBox from '../../components/InputBox/InputBox';
@@ -17,6 +15,7 @@ import { ButtonClickMouseEvent } from '../../models/form';
 import { HeaderInfo } from '../../models/header';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 import Feedback from '../../components/Feedback/Feedback';
+import { writeStateToLocalStorage } from '../../store/notesActions';
 
 const NewNotePage = () => {
   const {
@@ -26,7 +25,7 @@ const NewNotePage = () => {
     checkboxChangeHandler,
     clearFormHandler,
     descriptionChangeHandler,
-    isNoteCreatedChangeHandler,
+    setNoteStatusToCreated,
     allTagsIdsToValueArr,
     multiSelectValue,
     feedbackVisibilityChangeHandler,
@@ -37,13 +36,11 @@ const NewNotePage = () => {
 
   const createNoteHandler = useCallback(
     (event: ButtonClickMouseEvent) => {
-      // dispatchNote(notesActions.create(newNoteForm));
       dispatchNote<any>(writeStateToLocalStorage(newNoteForm));
-      isNoteCreatedChangeHandler();
+      setNoteStatusToCreated();
       feedbackVisibilityChangeHandler(true);
-      // setIsNoteCreated(true);
     },
-    [dispatchNote, newNoteForm, isNoteCreatedChangeHandler, feedbackVisibilityChangeHandler]
+    [dispatchNote, newNoteForm, setNoteStatusToCreated, feedbackVisibilityChangeHandler]
   );
 
   const headerInfo: HeaderInfo = useMemo(
