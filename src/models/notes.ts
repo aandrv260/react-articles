@@ -4,6 +4,7 @@ export interface NoteInfo {
   heading: string;
   tags: NoteTagInfo[];
   isFeatured?: boolean;
+  id: string;
 }
 
 export interface NoteFilters {

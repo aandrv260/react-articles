@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { NoteInfo } from '../../models/notes';
 import { NoteTagInfo } from '../../models/noteTags';
 import NoteTag from '../NoteTag/NoteTag';
@@ -14,13 +15,15 @@ const testTags: NoteTagInfo[] = [
 ];
 
 const Note = (props: NoteProps) => {
-  return (
-    <div className={styles['note']}>
-      <h3 className={styles['note__heading']}>{props.heading}</h3>
-      {props.isFeatured && <div className={styles['note__label']}>&nbsp;</div>}
+  const { heading, id, tags, isFeatured } = props;
 
-      {props.tags && props.tags.length > 0 && <NoteTags tags={props.tags} />}
-    </div>
+  return (
+    <Link to={`/note/${id}`} className={styles['note']}>
+      <h3 className={styles['note__heading']}>{heading}</h3>
+      {isFeatured && <div className={styles['note__label']}>&nbsp;</div>}
+
+      {tags && tags.length > 0 && <NoteTags tags={tags} />}
+    </Link>
   );
 };
 

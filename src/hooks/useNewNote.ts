@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
+import generateId from '../utils/generateId';
 import { changeValueToIdInTagsArr } from '../utils/tags';
 
 type ActionType =
@@ -36,6 +37,7 @@ const initialState: InitialCreateNoteState = {
   isFeedbackVisible: false,
   description: '',
   tags: [],
+  id: generateId(),
 };
 
 const newNoteReducer: FormReducer = (state, action) => {
