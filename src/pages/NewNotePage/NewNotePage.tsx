@@ -2,7 +2,7 @@ import { useMemo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { notesActions } from '../../store/index';
+import { notesActions, writeStateToLocalStorage } from '../../store/index';
 
 import PageContainer from '../../components/PageContainer/PageContainer';
 import Form from '../../components/Form/Form';
@@ -37,7 +37,8 @@ const NewNotePage = () => {
 
   const createNoteHandler = useCallback(
     (event: ButtonClickMouseEvent) => {
-      dispatchNote(notesActions.create(newNoteForm));
+      // dispatchNote(notesActions.create(newNoteForm));
+      dispatchNote<any>(writeStateToLocalStorage(newNoteForm));
       isNoteCreatedChangeHandler();
       feedbackVisibilityChangeHandler(true);
       // setIsNoteCreated(true);

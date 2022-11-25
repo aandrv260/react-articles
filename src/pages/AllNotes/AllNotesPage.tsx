@@ -17,7 +17,7 @@ const AllNotesPage = () => {
   const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
 
   // For testing the Tags ids. Remove after you finish with the tags edit functionality
-  console.log(state);
+  console.log('state', state);
 
   const headerInfo: HeaderInfo = {
     heading: 'All Notes',
@@ -29,6 +29,7 @@ const AllNotesPage = () => {
 
       {
         text: 'Edit Tags',
+        designStyle: 'outline',
         onClick: () => setModalIsVisible(true),
       },
     ],

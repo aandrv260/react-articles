@@ -1,4 +1,10 @@
-import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  configureStore,
+  PayloadAction,
+  ThunkAction,
+  AnyAction,
+} from '@reduxjs/toolkit';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
@@ -79,7 +85,7 @@ type Filter = string | NoteTagInfo[];
 
 // console.log('allTags from redux', allUniqueTags, tagsUnique);
 
-const initialState: NotesSlice = {
+export const initialReduxState: NotesSlice = {
   notes: [],
   allTags: [],
   filteredNotes: [],
@@ -91,8 +97,18 @@ const initialState: NotesSlice = {
 
 export const notesSlice = createSlice({
   name: 'notes',
-  initialState,
+  initialState: initialReduxState,
   reducers: {
+    /**
+     * - Changes the whole state with the one from the action.payload object
+     * - Should ONLY be used for getting data from Local Storage
+     */
+    mutateState(_, action: PayloadAction<NotesSlice>) {
+      return {
+        ...action.payload,
+      };
+    },
+
     delete(curState, action: PayloadAction<string | number>) {},
 
     filterChangeHandler(curState, action: PayloadAction<Filter>) {
@@ -119,7 +135,7 @@ export const notesSlice = createSlice({
         return;
       }
 
-      // Makes the unique tags enter the allTags array
+      // Makes the unique tags be pushed into the allTags array
       const newNoteTagsIds = newNote.tags.map(tag => tag.id);
       const allTagIds = curState.allTags.map(tag => tag.id);
 
@@ -135,6 +151,31 @@ export const notesSlice = createSlice({
 });
 
 export const notesActions = notesSlice.actions;
+
+export const getDataFromLocalStorage = (): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
+  return dispatch => {
+    const storedData = localStorage.getItem('NOTES_INFO');
+
+    if (storedData) {
+      const parsedData: NotesSlice = JSON.parse(storedData);
+
+      dispatch(notesActions.mutateState(parsedData));
+    }
+  };
+};
+
+export const writeStateToLocalStorage = (
+  newNote: Note
+): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
+  return (dispatch, getState) => {
+    dispatch(notesActions.create(newNote));
+
+    const state = getState();
+    const stateToJSON = JSON.stringify(state);
+
+    localStorage.setItem('NOTES_INFO', stateToJSON);
+  };
+};
 
 const store = configureStore({
   reducer: notesSlice.reducer,
