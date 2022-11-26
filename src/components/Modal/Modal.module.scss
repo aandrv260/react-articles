@@ -29,6 +29,14 @@
     }
   }
 
+  &__inputs {
+    margin-bottom: 2.4rem;
+  }
+
+  &__btn-group {
+    justify-content: center;
+  }
+
   &__input-box {
     display: flex;
     gap: 1rem;
