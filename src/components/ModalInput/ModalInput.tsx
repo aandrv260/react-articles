@@ -13,7 +13,6 @@ const ModalInput = ({ tag, onChange }: ModalInputProps) => {
   const dispatch = useDispatch();
 
   const deleteTagHandler = () => {
-    // dispatch(notesActions.deleteTag(tag));
     dispatch<any>(writeStateToLocalStorageAfterTagDelete(tag));
   };
 
