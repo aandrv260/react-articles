@@ -6,13 +6,20 @@
   border-radius: 3px;
   transition: all ease-in-out 0.2s;
 
+  &:hover {
+    transform: translateY(-1.2px);
+  }
+
   &--outline:hover,
   &--full {
     background-color: var(--color-main);
     color: #fff;
+
+    &:hover {
+      background-color: var(--color-main-shade);
+    }
   }
 
-  &--full:hover,
   &--outline {
     border-color: var(--color-main);
     background-color: transparent;

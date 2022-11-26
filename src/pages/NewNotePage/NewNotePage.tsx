@@ -1,8 +1,6 @@
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
-import { notesActions } from '../../store/index';
 
 import PageContainer from '../../components/PageContainer/PageContainer';
 import Form from '../../components/Form/Form';
@@ -17,6 +15,7 @@ import { ButtonClickMouseEvent } from '../../models/form';
 import { HeaderInfo } from '../../models/header';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 import Feedback from '../../components/Feedback/Feedback';
+import { writeStateToLocalStorage } from '../../store/notesActions';
 
 const NewNotePage = () => {
   const {
@@ -26,7 +25,8 @@ const NewNotePage = () => {
     checkboxChangeHandler,
     clearFormHandler,
     descriptionChangeHandler,
-    isNoteCreatedChangeHandler,
+    setNoteStatusToCreated,
+    allTagsIdsToValueArr,
     multiSelectValue,
     feedbackVisibilityChangeHandler,
   } = useNewNote();
@@ -36,12 +36,11 @@ const NewNotePage = () => {
 
   const createNoteHandler = useCallback(
     (event: ButtonClickMouseEvent) => {
-      dispatchNote(notesActions.create(newNoteForm));
-      isNoteCreatedChangeHandler();
+      dispatchNote<any>(writeStateToLocalStorage(newNoteForm));
+      setNoteStatusToCreated();
       feedbackVisibilityChangeHandler(true);
-      // setIsNoteCreated(true);
     },
-    [dispatchNote, newNoteForm, isNoteCreatedChangeHandler, feedbackVisibilityChangeHandler]
+    [dispatchNote, newNoteForm, setNoteStatusToCreated, feedbackVisibilityChangeHandler]
   );
 
   const headerInfo: HeaderInfo = useMemo(
@@ -89,6 +88,7 @@ const NewNotePage = () => {
             <InputBox
               id="note-tags"
               label="Tags"
+              options={allTagsIdsToValueArr}
               multiSelectValue={multiSelectValue}
               onMultiSelectChange={tagsChangeHandler}
               inputElementType="multi-select"

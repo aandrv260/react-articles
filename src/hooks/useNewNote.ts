@@ -1,6 +1,10 @@
 import { useReducer } from 'react';
+import { useSelector } from 'react-redux';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
+import { NotesSlice } from '../models/store';
+import generateId from '../utils/generateId';
+import { changeValueToIdInTagsArr } from '../utils/tags';
 
 type ActionType =
   | 'CHANGE_HEADING'
@@ -33,6 +37,7 @@ const initialState: InitialCreateNoteState = {
   isFeedbackVisible: false,
   description: '',
   tags: [],
+  id: generateId(),
 };
 
 const newNoteReducer: FormReducer = (state, action) => {
@@ -83,6 +88,8 @@ const newNoteReducer: FormReducer = (state, action) => {
 
 const useNewNote = () => {
   const [form, dispatch] = useReducer(newNoteReducer, initialState);
+  const allTags = useSelector((state: NotesSlice) => state.allTags);
+  const allTagsIdsToValueArr = changeValueToIdInTagsArr(allTags);
 
   const headingChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
@@ -100,7 +107,7 @@ const useNewNote = () => {
     dispatch({ type: 'CHANGE_TAGS', tags });
   };
 
-  const isNoteCreatedChangeHandler = () => {
+  const setNoteStatusToCreated = () => {
     dispatch({ type: 'SET_NOTE_CREATED' });
   };
 
@@ -122,8 +129,9 @@ const useNewNote = () => {
     descriptionChangeHandler,
     tagsChangeHandler,
     clearFormHandler,
-    isNoteCreatedChangeHandler,
+    setNoteStatusToCreated,
     multiSelectValue,
+    allTagsIdsToValueArr,
     feedbackVisibilityChangeHandler,
   };
 };
