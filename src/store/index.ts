@@ -6,79 +6,6 @@ import { filterNotes } from './notesFiltersUtils';
 
 type Filter = string | NoteTagInfo[];
 
-// const testNotes = [
-//   {
-//     heading: 'CSS Selectors',
-//     isFeatured: false,
-//     tags: [
-//       {
-//         label: 'CSS',
-//         id: Math.random(),
-//       },
-
-//       {
-//         label: 'HTML',
-//         id: Math.random(),
-//       },
-
-//       {
-//         label: 'Selectors',
-//         id: Math.random(),
-//       },
-//     ],
-//   },
-
-//   {
-//     heading: 'Centering a DIV',
-//     isFeatured: true,
-//     tags: [
-//       {
-//         label: 'CSS',
-//         id: Math.random(),
-//       },
-
-//       {
-//         label: 'HTML',
-//         id: Math.random(),
-//       },
-
-//       {
-//         label: 'Flexbox',
-//         id: Math.random(),
-//       },
-//     ],
-//   },
-
-//   {
-//     heading: 'JS smooth scroll',
-//     isFeatured: false,
-//     tags: [
-//       {
-//         label: 'JS',
-//         id: Math.random(),
-//       },
-
-//       {
-//         label: 'HTML',
-//         id: Math.random(),
-//       },
-
-//       {
-//         label: 'Objects',
-//         id: Math.random(),
-//       },
-//     ],
-//   },
-// ];
-
-// const allUniqueTags = new Set(testNotes.flatMap(note => note.tags).map(tag => tag.label));
-// const tagsUnique = [...allUniqueTags].map(tag => ({
-//   label: tag,
-//   id: Math.random(),
-// }));
-
-// console.log('allTags from redux', allUniqueTags, tagsUnique);
-
 export const initialReduxState: NotesSlice = {
   notes: [],
   allTags: [],
@@ -106,12 +33,12 @@ export const notesSlice = createSlice({
     deleteNote(curState, action: PayloadAction<Note>) {},
 
     deleteTag(curState, action: PayloadAction<NoteTagInfo>) {
-      const indexOfTag = curState.allTags.findIndex(tag => tag.id === action.payload.id);
+      const indexOfTag = curState.allTags.findIndex(tag => tag.value === action.payload.value);
 
       curState.allTags.splice(indexOfTag, 1);
 
       curState.notes.forEach(note => {
-        const tagIndex = note.tags.findIndex(tag => tag.id === action.payload.id);
+        const tagIndex = note.tags.findIndex(tag => tag.value === action.payload.value);
         console.log('in the loop, index: ', tagIndex);
 
         if (tagIndex !== -1) {
@@ -151,12 +78,12 @@ export const notesSlice = createSlice({
       }
 
       // Makes the unique tags be pushed into the allTags array
-      const newNoteTagsIds = newNote.tags.map(tag => tag.id);
-      const allTagIds = curState.allTags.map(tag => tag.id);
+      const newNoteTagsIds = newNote.tags.map(tag => tag.value);
+      const allTagIds = curState.allTags.map(tag => tag.value);
 
       newNoteTagsIds.forEach(newNoteTag => {
         if (!allTagIds.includes(newNoteTag)) {
-          const [tagObject] = newNote.tags.filter(tag => tag.id === newNoteTag);
+          const [tagObject] = newNote.tags.filter(tag => tag.value === newNoteTag);
 
           curState.allTags.push(tagObject);
         }

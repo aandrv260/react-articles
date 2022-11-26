@@ -26,8 +26,7 @@ const NewNotePage = () => {
     clearFormHandler,
     descriptionChangeHandler,
     setNoteStatusToCreated,
-    allTagsIdsToValueArr,
-    multiSelectValue,
+    allTags,
     feedbackVisibilityChangeHandler,
   } = useNewNote();
 
@@ -62,8 +61,6 @@ const NewNotePage = () => {
     [navigate, createNoteHandler]
   );
 
-  console.log('newNoteForm', newNoteForm);
-
   return (
     <>
       <Feedback
@@ -88,8 +85,8 @@ const NewNotePage = () => {
             <InputBox
               id="note-tags"
               label="Tags"
-              options={allTagsIdsToValueArr}
-              multiSelectValue={multiSelectValue}
+              options={allTags}
+              multiSelectValue={newNoteForm.tags}
               onMultiSelectChange={tagsChangeHandler}
               inputElementType="multi-select"
             />

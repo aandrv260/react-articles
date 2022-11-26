@@ -1,6 +1,6 @@
 export interface NoteTagInfo {
   label: string;
-  id: number;
+  value: string;
 }
 
 export interface NoteTagsInfo {

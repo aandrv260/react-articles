@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { IonIcon } from 'react-ion-icon';
 
 interface ModalHeaderProps {
@@ -17,4 +16,4 @@ const ModalHeader = ({ heading, onClose }: ModalHeaderProps) => {
   );
 };
 
-export default memo<ModalHeaderProps>(ModalHeader);
+export default ModalHeader;

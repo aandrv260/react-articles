@@ -8,7 +8,7 @@ const NoteTags = (props: NoteTagsProps) => {
   return (
     <div className={styles['tags']}>
       {props.tags.map(tag => (
-        <NoteTag id={tag.id} label={tag.label} key={Math.random()} />
+        <NoteTag label={tag.label} key={Math.random()} />
       ))}
     </div>
   );

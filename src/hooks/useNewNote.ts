@@ -4,7 +4,6 @@ import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
 import generateId from '../utils/generateId';
-import { changeValueToIdInTagsArr } from '../utils/tags';
 
 type ActionType =
   | 'CHANGE_HEADING'
@@ -89,7 +88,6 @@ const newNoteReducer: FormReducer = (state, action) => {
 const useNewNote = () => {
   const [form, dispatch] = useReducer(newNoteReducer, initialState);
   const allTags = useSelector((state: NotesSlice) => state.allTags);
-  const allTagsIdsToValueArr = changeValueToIdInTagsArr(allTags);
 
   const headingChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
@@ -119,8 +117,6 @@ const useNewNote = () => {
     dispatch({ type: 'CLEAR_FORM' });
   };
 
-  const multiSelectValue = form.tags?.map(tag => ({ label: tag.label, value: tag.id })) || [];
-
   return {
     newNoteForm: form,
     dispatchForm: dispatch,
@@ -130,8 +126,7 @@ const useNewNote = () => {
     tagsChangeHandler,
     clearFormHandler,
     setNoteStatusToCreated,
-    multiSelectValue,
-    allTagsIdsToValueArr,
+    allTags,
     feedbackVisibilityChangeHandler,
   };
 };
