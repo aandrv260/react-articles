@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { Routes, Route } from 'react-router-dom';
 import Container from './components/Container/Container';
 import AllNotesPage from './pages/AllNotes/AllNotesPage';

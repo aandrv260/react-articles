@@ -103,7 +103,28 @@ export const notesSlice = createSlice({
       };
     },
 
-    delete(curState, action: PayloadAction<string | number>) {},
+    deleteNote(curState, action: PayloadAction<Note>) {},
+
+    deleteTag(curState, action: PayloadAction<NoteTagInfo>) {
+      const indexOfTag = curState.allTags.findIndex(tag => tag.id === action.payload.id);
+
+      curState.allTags.splice(indexOfTag, 1);
+
+      curState.notes.forEach(note => {
+        const tagIndex = note.tags.findIndex(tag => tag.id === action.payload.id);
+        console.log('in the loop, index: ', tagIndex);
+
+        if (tagIndex !== -1) {
+          note.tags.splice(tagIndex, 1);
+        }
+
+        curState.filteredNotes = curState.notes;
+
+        // Reset filters
+        curState.filters.heading = '';
+        curState.filters.tags = [];
+      });
+    },
 
     filterChangeHandler(curState, action: PayloadAction<Filter>) {
       const filterValue = action.payload;

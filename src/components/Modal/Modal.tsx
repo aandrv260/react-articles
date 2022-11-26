@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
 import { NotesSlice } from '../../models/store';
@@ -14,7 +15,7 @@ const Modal = (props: ModalProps) => {
   const { isVisible, closeHandler } = props;
   const allTags = useSelector((state: NotesSlice) => state.allTags);
 
-  const ModalContent = () => {
+  const ModalContent = useCallback(() => {
     return (
       <>
         {isVisible && (
@@ -23,14 +24,14 @@ const Modal = (props: ModalProps) => {
               <ModalHeader heading="Edit tags" onClose={closeHandler} />
 
               {allTags.map(tag => (
-                <ModalInput tag={tag} key={Math.random()} />
+                <ModalInput tag={tag} key={Math.random()}></ModalInput>
               ))}
             </div>
           </div>
         )}
       </>
     );
-  };
+  }, [isVisible, allTags, closeHandler]);
 
   return ReactDOM.createPortal(<ModalContent />, document.getElementById('modal')!);
 };

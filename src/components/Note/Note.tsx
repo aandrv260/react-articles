@@ -1,18 +1,9 @@
 import { Link } from 'react-router-dom';
 import { NoteInfo } from '../../models/notes';
-import { NoteTagInfo } from '../../models/noteTags';
-import NoteTag from '../NoteTag/NoteTag';
 import NoteTags from '../NoteTags/NoteTags';
 import styles from './Note.module.scss';
-// #4f4fec
 
 type NoteProps = NoteInfo;
-
-const testTags: NoteTagInfo[] = [
-  // { label: 'CSS', id: 1 },
-  // { label: 'HTML', id: 2 },
-  // { label: 'JS', id: 3 },
-];
 
 const Note = (props: NoteProps) => {
   const { heading, id, tags, isFeatured } = props;
