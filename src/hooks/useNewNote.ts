@@ -1,5 +1,6 @@
 import { useReducer } from 'react';
 import { useSelector } from 'react-redux';
+import { InputChangeHandler, TextareaChangeHandler } from '../models/form';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
@@ -97,7 +98,7 @@ const useNewNote = () => {
     dispatch({ type: 'CHANGE_IS_FEATURED' });
   };
 
-  const descriptionChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const descriptionChangeHandler: TextareaChangeHandler = event => {
     dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
   };
 

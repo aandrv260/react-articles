@@ -14,7 +14,7 @@ const FilterNotes = () => {
           type={'text'}
           label="Title"
           value={filters.heading}
-          onChange={titleChangeHandler}
+          onInputChange={titleChangeHandler}
         />
 
         <InputBox

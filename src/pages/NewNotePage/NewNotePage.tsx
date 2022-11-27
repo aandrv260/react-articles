@@ -79,7 +79,7 @@ const NewNotePage = () => {
               type={'text'}
               label="Title"
               value={newNoteForm.heading}
-              onChange={headingChangeHandler}
+              onInputChange={headingChangeHandler}
             />
 
             <InputBox
@@ -103,7 +103,7 @@ const NewNotePage = () => {
             type={'text'}
             label="Description"
             value={newNoteForm.description}
-            onChange={descriptionChangeHandler}
+            onTextareaChange={descriptionChangeHandler}
             inputElementType="textarea"
           />
         </Form>

@@ -1,13 +1,7 @@
-import { InputChangeEvent } from '../../models/form';
+import { InputChangeHandler, TextareaChangeHandler } from '../../models/form';
 import Select from 'react-select/creatable';
 import styles from './InputBox.module.scss';
-import { useMemo } from 'react';
 import { NoteTagInfo } from '../../models/noteTags';
-
-// type SelectTag = {
-//   label: string;
-//   value: string;
-// };
 
 interface InputBoxProps {
   id: string;
@@ -17,7 +11,8 @@ interface InputBoxProps {
   value?: string | number;
   options?: NoteTagInfo[];
   multiSelectValue?: NoteTagInfo[];
-  onChange?: InputChangeEvent;
+  onInputChange?: InputChangeHandler;
+  onTextareaChange?: TextareaChangeHandler;
   onMultiSelectChange?: (data: NoteTagInfo[]) => void;
   inputElementType?: 'input' | 'textarea' | 'multi-select';
 }
@@ -29,7 +24,8 @@ const InputBox: React.FC<InputBoxProps> = props => {
     type,
     placeholder,
     value,
-    onChange,
+    onInputChange,
+    onTextareaChange,
     options,
     inputElementType,
     multiSelectValue,
@@ -75,11 +71,17 @@ const InputBox: React.FC<InputBoxProps> = props => {
       )}
 
       {inputElementType === 'textarea' && (
-        <textarea placeholder={placeholder} id={id} value={value} onChange={onChange} />
+        <textarea placeholder={placeholder} id={id} value={value} onChange={onTextareaChange} />
       )}
 
       {(inputElementType === 'input' || !inputElementType) && (
-        <input type={type} id={id} placeholder={placeholder} value={value} onChange={onChange} />
+        <input
+          type={type}
+          id={id}
+          placeholder={placeholder}
+          value={value}
+          onChange={onInputChange}
+        />
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
 import { NotesSlice } from '../../models/store';
@@ -17,37 +17,34 @@ const Modal = (props: ModalProps) => {
   const { isVisible, closeHandler } = props;
   const allTags = useSelector((state: NotesSlice) => state.allTags);
 
-  const ModalContent = useCallback(() => {
-    return (
-      <>
-        {isVisible && (
-          <div className={styles['modal']}>
-            <div className={styles['modal__box']}>
-              <ModalHeader heading="Edit tags" onClose={closeHandler} />
+  return ReactDOM.createPortal(
+    <>
+      {isVisible && (
+        <div className={styles['modal']}>
+          <div className={styles['modal__box']}>
+            <ModalHeader heading="Edit tags" onClose={closeHandler} />
 
-              <div className={styles['modal__inputs']}>
-                {allTags.map(tag => (
-                  <ModalInput tag={tag} key={Math.random()}></ModalInput>
-                ))}
-              </div>
-
-              <ButtonGroup className={styles['modal__btn-group']}>
-                <Button designStyle="full" type="button" onClick={() => {}}>
-                  Submit changes
-                </Button>
-
-                <Button designStyle="outline" type="button" onClick={closeHandler}>
-                  Close
-                </Button>
-              </ButtonGroup>
+            <div className={styles['modal__inputs']}>
+              {allTags.map(tag => (
+                <ModalInput
+                  // onChange={tagChangeHandler}
+                  tag={tag}
+                  key={Math.random()}
+                ></ModalInput>
+              ))}
             </div>
-          </div>
-        )}
-      </>
-    );
-  }, [isVisible, allTags, closeHandler]);
 
-  return ReactDOM.createPortal(<ModalContent />, document.getElementById('modal')!);
+            <ButtonGroup className={styles['modal__btn-group']}>
+              <Button designStyle="full" type="button" onClick={closeHandler}>
+                Close
+              </Button>
+            </ButtonGroup>
+          </div>
+        </div>
+      )}
+    </>,
+    document.getElementById('modal') as HTMLDivElement
+  );
 };
 
 export default Modal;
