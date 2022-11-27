@@ -1,11 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { IonIcon } from 'react-ion-icon';
 import { useDispatch } from 'react-redux';
 import { InputChangeHandler } from '../../models/form';
 
 import { NoteTagInfo } from '../../models/noteTags';
 import {
-  notesActions,
   writeStateToLocalStorageAfterTagDelete,
   writeStateToLocalStorageAfterTagEdit,
 } from '../../store/notesActions';
