@@ -18,7 +18,7 @@ const PageContainer = (props: PageContainerProps) => {
 
   return (
     <>
-      {header && <Header heading={header.heading} buttons={header?.buttons} />}
+      {header && <Header heading={header.heading} buttons={header?.buttons} tags={header.tags} />}
 
       <main>{children}</main>
     </>

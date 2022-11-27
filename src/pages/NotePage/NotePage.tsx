@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Markdown from 'markdown-to-jsx';
 import PageContainer from '../../components/PageContainer/PageContainer';
@@ -6,23 +6,25 @@ import { HeaderInfo } from '../../models/header';
 import useQuery from '../../hooks/useQuery';
 import { useSelector } from 'react-redux';
 import { NotesSlice } from '../../models/store';
+import PageNotFound from '../PageNotFound/PageNotFound';
 
 const NotePage = () => {
-  const [num, setNum] = useState<number>(0);
   const navigate = useNavigate();
   const noteId = useQuery();
   const note = useSelector((state: NotesSlice) => state.notes.find(note => note.id === noteId));
+  const markdown: string = useMemo(() => {
+    return note?.description || '';
+  }, [note]);
 
-  console.log(note);
+  if (!note || !noteId) return <PageNotFound />;
 
   const headerInfo: HeaderInfo = {
-    heading: 'The_Title',
+    heading: note.heading,
+    tags: note.tags,
     buttons: [
       {
         text: 'Edit',
-        onClick: () => {
-          setNum(prev => prev + 1);
-        },
+        onClick: () => {},
       },
 
       {
@@ -39,12 +41,6 @@ const NotePage = () => {
       },
     ],
   };
-
-  const markdown = `
-  # Example markdown
-  <br />
-  ### It works!
-  `;
 
   return (
     <PageContainer header={headerInfo}>

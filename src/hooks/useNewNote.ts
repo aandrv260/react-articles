@@ -10,6 +10,7 @@ import {
 import { NotesSlice } from '../models/store';
 import { writeStateToLocalStorage } from '../store/notesActions';
 import { initialState, noFeedback } from '../utils/Form/form';
+// import { initialState, noFeedback } from '../utils/Form/form';
 import { entireFormIsValid, validateTextInput } from '../utils/Form/formValidation';
 import generateId from '../utils/generateId';
 

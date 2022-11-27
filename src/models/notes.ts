@@ -16,4 +16,5 @@ export interface Note extends NoteInfo {
   description: string;
 }
 
-export type NotesInfo = NoteInfo[];
+// export type NotesInfo = NoteInfo[];
+export type NotesInfo = Note[];

@@ -1,4 +1,5 @@
 import { ButtonClickMouseEvent } from './form';
+import { NoteTagInfo } from './noteTags';
 
 export type ButtonStyles = 'outline' | 'full';
 
@@ -11,4 +12,5 @@ interface HeaderButton {
 export interface HeaderInfo {
   heading: string;
   buttons?: HeaderButton[];
+  tags?: NoteTagInfo[];
 }

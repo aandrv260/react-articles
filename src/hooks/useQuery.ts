@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
  */
 const useQuery = () => {
   const { search } = useLocation();
-  const [query] = search.split('?id=')[1].split('&');
+  const query = search?.split('?id=')[1]?.split('&')[0];
 
   return useMemo(() => query, [query]);
 };
