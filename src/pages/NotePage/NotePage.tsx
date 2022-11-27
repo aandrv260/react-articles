@@ -4,14 +4,18 @@ import Markdown from 'markdown-to-jsx';
 import PageContainer from '../../components/PageContainer/PageContainer';
 import { HeaderInfo } from '../../models/header';
 import useQuery from '../../hooks/useQuery';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NotesSlice } from '../../models/store';
 import PageNotFound from '../PageNotFound/PageNotFound';
+import { notesActions, writeStateToLocalStorageAfterNoteDelete } from '../../store/notesActions';
 
 const NotePage = () => {
   const navigate = useNavigate();
   const noteId = useQuery();
+
   const note = useSelector((state: NotesSlice) => state.notes.find(note => note.id === noteId));
+  const dispatch = useDispatch();
+
   const markdown: string = useMemo(() => {
     return note?.description || '';
   }, [note]);
@@ -30,7 +34,10 @@ const NotePage = () => {
       {
         text: 'Delete',
         isRed: true,
-        onClick: () => {},
+        onClick: () => {
+          dispatch<any>(writeStateToLocalStorageAfterNoteDelete(noteId));
+          navigate('/');
+        },
       },
 
       {

@@ -30,7 +30,16 @@ export const notesSlice = createSlice({
       };
     },
 
-    deleteNote(curState, action: PayloadAction<Note>) {},
+    deleteNote(curState, action: PayloadAction<string>) {
+      const noteId = action.payload;
+      const indexOfNote = curState.notes.findIndex(note => note.id === noteId);
+
+      if (indexOfNote) {
+        curState.notes.splice(indexOfNote, 1);
+      }
+
+      curState.filteredNotes = curState.notes;
+    },
 
     deleteTag(curState, action: PayloadAction<NoteTagInfo>) {
       const indexOfTag = curState.allTags.findIndex(tag => tag.value === action.payload.value);
