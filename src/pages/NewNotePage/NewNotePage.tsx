@@ -16,6 +16,7 @@ import { HeaderInfo } from '../../models/header';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 import Feedback from '../../components/Feedback/Feedback';
 import { writeStateToLocalStorage } from '../../store/notesActions';
+import { getStatusColor } from '../../utils/formValidation';
 
 const NewNotePage = () => {
   const {
@@ -27,8 +28,11 @@ const NewNotePage = () => {
     descriptionChangeHandler,
     setNoteStatusToCreated,
     allTags,
-    changeFeedbackVisibility,
+    hideFeedback,
+    // changeFeedbackVisibility,
   } = useNewNote();
+
+  console.log('newNoteForm.formIsValid', newNoteForm.formIsValid);
 
   const navigate = useNavigate();
   const dispatchNote = useDispatch();
@@ -38,9 +42,9 @@ const NewNotePage = () => {
       dispatchNote<any>(writeStateToLocalStorage(newNoteForm));
       clearForm();
       setNoteStatusToCreated();
-      changeFeedbackVisibility(true);
+      // changeFeedbackVisibility(true);
     },
-    [dispatchNote, newNoteForm, setNoteStatusToCreated, changeFeedbackVisibility]
+    [dispatchNote, newNoteForm, setNoteStatusToCreated, clearForm]
   );
 
   const headerInfo: HeaderInfo = useMemo(
@@ -65,11 +69,11 @@ const NewNotePage = () => {
   return (
     <>
       <Feedback
-        status="success"
+        status={getStatusColor(newNoteForm.status)}
         buttons={[]}
-        message="Note created"
-        isVisible={!!newNoteForm.isFeedbackVisible}
-        setVisibility={changeFeedbackVisibility}
+        message={newNoteForm.feedback.message}
+        isVisible={newNoteForm.feedback.isVisible}
+        onClose={hideFeedback}
       />
 
       <PageContainer header={headerInfo}>

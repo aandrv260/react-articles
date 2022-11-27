@@ -1,86 +1,133 @@
 import { useReducer } from 'react';
 import { useSelector } from 'react-redux';
-import { TextareaChangeHandler } from '../models/form';
-import { Note } from '../models/notes';
+import {
+  FormReducer,
+  NoteFormState,
+  InputChangeHandler,
+  TagsChangeHandler,
+  TextareaChangeHandler,
+} from '../models/form';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
+import {
+  entireFormIsValid,
+  isFormDescriptionValid,
+  isFormHeadingValid,
+} from '../utils/formValidation';
 import generateId from '../utils/generateId';
 
-type ActionType =
-  | 'CHANGE_HEADING'
-  | 'CHANGE_IS_FEATURED'
-  | 'CHANGE_TAGS'
-  | 'CHANGE_DESCRIPTION'
-  | 'SET_NOTE_CREATED'
-  | 'SET_FEEDBACK_VISIBILITY'
-  | 'CLEAR_FORM';
-
-interface NewNoteAction {
-  type: ActionType;
-  value?: string;
-  feedbackVisibility?: boolean;
-  tags?: NoteTagInfo[];
-}
-
-interface InitialCreateNoteState extends Note {
-  isNoteCreated?: boolean;
-  isFeedbackVisible?: boolean;
-}
-
-type FormReducer = (state: InitialCreateNoteState, action: NewNoteAction) => InitialCreateNoteState;
 type ChangeEvent<T> = React.ChangeEvent<T>;
 
-const initialState: InitialCreateNoteState = {
+const noFeedback = {
+  message: '',
+  isVisible: false,
+};
+
+const initialState: NoteFormState = {
   heading: '',
   isFeatured: false,
-  isNoteCreated: false,
-  isFeedbackVisible: false,
+  formIsValid: false,
+  status: 'FORM_EMPTY',
+  feedback: noFeedback,
   description: '',
   tags: [],
   id: generateId(),
 };
 
 const newNoteReducer: FormReducer = (state, action) => {
+  const feedbackMessage = state.feedback.message.trim();
+  let newFeedbackMessage = '';
+
+  // console.log(stat)
+
   switch (action.type) {
-    case 'CHANGE_HEADING':
+    case 'CHANGE_HEADING': {
+      const heading = action.value || state.heading;
+
+      if (action.value !== undefined && !isFormHeadingValid(action.value)) {
+        newFeedbackMessage = 'The heading must have >= 5 characters.';
+
+        return {
+          ...state,
+          status: 'VALIDATION_ISSUE',
+          formIsValid: false,
+          feedback: {
+            message: newFeedbackMessage,
+            isVisible: true,
+          },
+          heading: action.value,
+        };
+      }
+
       return {
         ...state,
-        heading: action.value || action.value === '' ? action.value : state.heading,
+        status: 'IN_EDIT',
+        formIsValid: entireFormIsValid({ heading, description: state.description }),
+        feedback: noFeedback,
+        heading,
       };
+    }
 
     case 'CHANGE_IS_FEATURED':
       return {
         ...state,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
         isFeatured: !state.isFeatured,
       };
 
     case 'CHANGE_TAGS':
       return {
         ...state,
-        tags: action.tags ? action.tags : state.tags,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        tags: action.tags || state.tags,
       };
 
-    case 'CHANGE_DESCRIPTION':
+    case 'CHANGE_DESCRIPTION': {
+      const description = action.value || state.description;
+
+      if (action.value !== undefined && !isFormDescriptionValid(action.value)) {
+        return {
+          ...state,
+          status: 'VALIDATION_ISSUE',
+          formIsValid: false,
+          feedback: {
+            message: 'Description must contain at least 20 characters.',
+            isVisible: true,
+          },
+          description: action.value,
+        };
+      }
+
       return {
         ...state,
-        description: action.value || action.value === '' ? action.value : state.description,
+        description,
+        status: 'IN_EDIT',
+        formIsValid: entireFormIsValid({ heading: state.heading, description }),
+        feedback: noFeedback,
       };
+    }
 
     case 'SET_NOTE_CREATED':
       return {
         ...state,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
         isNoteCreated: true,
       };
 
-    case 'SET_FEEDBACK_VISIBILITY':
+    case 'HIDE_FEEDBACK':
       return {
         ...state,
-        isFeedbackVisible: !!action.feedbackVisibility,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        feedback: {
+          message: '',
+          isVisible: false,
+        },
       };
 
     case 'CLEAR_FORM':
       return {
         ...initialState,
+        formIsValid: false,
         id: generateId(),
       };
 
@@ -93,7 +140,7 @@ const useNewNote = () => {
   const [form, dispatch] = useReducer(newNoteReducer, initialState);
   const allTags = useSelector((state: NotesSlice) => state.allTags);
 
-  const headingChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const headingChangeHandler: InputChangeHandler = event => {
     dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
   };
 
@@ -105,7 +152,7 @@ const useNewNote = () => {
     dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
   };
 
-  const tagsChangeHandler = (tags: NoteTagInfo[]) => {
+  const tagsChangeHandler: TagsChangeHandler = tags => {
     dispatch({ type: 'CHANGE_TAGS', tags });
   };
 
@@ -113,8 +160,8 @@ const useNewNote = () => {
     dispatch({ type: 'SET_NOTE_CREATED' });
   };
 
-  const changeFeedbackVisibility = (isVisible: boolean) => {
-    dispatch({ type: 'SET_FEEDBACK_VISIBILITY', feedbackVisibility: isVisible });
+  const hideFeedback = () => {
+    dispatch({ type: 'HIDE_FEEDBACK' });
   };
 
   const clearForm = () => {
@@ -131,7 +178,7 @@ const useNewNote = () => {
     clearForm,
     setNoteStatusToCreated,
     allTags,
-    changeFeedbackVisibility,
+    hideFeedback,
   };
 };
 

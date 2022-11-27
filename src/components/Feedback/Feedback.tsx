@@ -2,25 +2,26 @@ import Button, { ButtonProps } from '../Button/Button';
 import ButtonGroup from '../ButtonGroup/ButtonGroup';
 import styles from './Feedback.module.scss';
 import { IonIcon } from 'react-ion-icon';
+import { FeedbackStatus } from '../../models/form';
 
 interface FeedbackProps {
-  status: 'success' | 'failure' | 'warning';
+  status: FeedbackStatus;
   message: string;
   buttons?: ButtonProps[];
   isVisible: boolean;
-  setVisibility: (visiblity: boolean) => void;
+  onClose: () => void;
 }
 
 const Feedback = (props: FeedbackProps) => {
-  const { status, message, buttons, isVisible, setVisibility } = props;
+  const { status, message, buttons, isVisible, onClose } = props;
   const statusClassName = styles[`feedback--${status}`];
 
   return (
     <>
       {isVisible && (
-        <div className={`${styles['feedback']} ${statusClassName}`}>
+        <div className={`${styles['feedback']} ${statusClassName}`.trim()}>
           <p className={styles['feedback__message']}>{message}</p>
-          <div className={styles['feedback__close']} onClick={() => setVisibility(false)}>
+          <div className={styles['feedback__close']} onClick={() => onClose()}>
             <IonIcon name="close-outline" />
           </div>
 
