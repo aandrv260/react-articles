@@ -26,7 +26,12 @@ const Header: React.FC<HeaderProps> = ({ heading, buttons, tags }) => {
       {buttons && buttons?.length > 0 && (
         <ButtonGroup>
           {buttons.map(button => (
-            <Button onClick={button.onClick} designStyle={button.designStyle} key={Math.random()}>
+            <Button
+              onClick={button.onClick}
+              designStyle={button.designStyle}
+              isRed={button.isRed}
+              key={Math.random()}
+            >
               {button.text}
             </Button>
           ))}

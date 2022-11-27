@@ -9,9 +9,15 @@
 :root {
   --color-main: #4f4fec;
   --color-main-shade: #6060dc;
+
   --color-text-main: #333;
   --color-text-white: #fff;
   --color-default-grey: #aaa;
+
+  --color-green: #2aa97a;
+  --color-red: #b92626;
+  --color-warning: #c89f23;
+
   --border-radius-default: 4px;
 }
 

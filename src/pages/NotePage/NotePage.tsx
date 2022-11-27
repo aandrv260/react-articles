@@ -29,6 +29,7 @@ const NotePage = () => {
 
       {
         text: 'Delete',
+        isRed: true,
         onClick: () => {},
       },
 

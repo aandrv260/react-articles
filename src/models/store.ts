@@ -1,4 +1,4 @@
-import { Note, NoteFilters, NotesInfo } from './notes';
+import { Note, NoteFilters } from './notes';
 import { NoteTagInfo } from './noteTags';
 
 export interface NotesSlice {
