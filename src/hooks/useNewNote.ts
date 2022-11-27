@@ -1,71 +1,25 @@
 import { useReducer } from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   FormReducer,
-  NoteFormState,
   InputChangeHandler,
   TagsChangeHandler,
   TextareaChangeHandler,
 } from '../models/form';
-import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
-import {
-  entireFormIsValid,
-  isFormDescriptionValid,
-  isFormHeadingValid,
-} from '../utils/formValidation';
+import { initialState, noFeedback } from '../utils/Form/form';
+import { entireFormIsValid, validateTextInput } from '../utils/Form/formValidation';
 import generateId from '../utils/generateId';
 
-type ChangeEvent<T> = React.ChangeEvent<T>;
-
-const noFeedback = {
-  message: '',
-  isVisible: false,
-};
-
-const initialState: NoteFormState = {
-  heading: '',
-  isFeatured: false,
-  formIsValid: false,
-  status: 'FORM_EMPTY',
-  feedback: noFeedback,
-  description: '',
-  tags: [],
-  id: generateId(),
-};
-
 const newNoteReducer: FormReducer = (state, action) => {
-  const feedbackMessage = state.feedback.message.trim();
-  let newFeedbackMessage = '';
-
-  // console.log(stat)
-
   switch (action.type) {
     case 'CHANGE_HEADING': {
-      const heading = action.value || state.heading;
-
-      if (action.value !== undefined && !isFormHeadingValid(action.value)) {
-        newFeedbackMessage = 'The heading must have >= 5 characters.';
-
-        return {
-          ...state,
-          status: 'VALIDATION_ISSUE',
-          formIsValid: false,
-          feedback: {
-            message: newFeedbackMessage,
-            isVisible: true,
-          },
-          heading: action.value,
-        };
-      }
-
-      return {
-        ...state,
-        status: 'IN_EDIT',
-        formIsValid: entireFormIsValid({ heading, description: state.description }),
-        feedback: noFeedback,
-        heading,
-      };
+      return validateTextInput(
+        state,
+        { type: 'heading', value: action.value },
+        'The heading must have >= 5 characters.'
+      );
     }
 
     case 'CHANGE_IS_FEATURED':
@@ -83,34 +37,22 @@ const newNoteReducer: FormReducer = (state, action) => {
       };
 
     case 'CHANGE_DESCRIPTION': {
-      const description = action.value || state.description;
-
-      if (action.value !== undefined && !isFormDescriptionValid(action.value)) {
-        return {
-          ...state,
-          status: 'VALIDATION_ISSUE',
-          formIsValid: false,
-          feedback: {
-            message: 'Description must contain at least 20 characters.',
-            isVisible: true,
-          },
-          description: action.value,
-        };
-      }
-
-      return {
-        ...state,
-        description,
-        status: 'IN_EDIT',
-        formIsValid: entireFormIsValid({ heading: state.heading, description }),
-        feedback: noFeedback,
-      };
+      return validateTextInput(
+        state,
+        { type: 'description', value: action.value },
+        'Description must contain at least 20 characters.'
+      );
     }
 
     case 'SET_NOTE_CREATED':
       return {
         ...state,
         formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        status: 'NOTE_CREATED',
+        feedback: {
+          message: 'Successfully created your new note!',
+          isVisible: true,
+        },
         isNoteCreated: true,
       };
 
@@ -118,10 +60,7 @@ const newNoteReducer: FormReducer = (state, action) => {
       return {
         ...state,
         formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
-        feedback: {
-          message: '',
-          isVisible: false,
-        },
+        feedback: noFeedback,
       };
 
     case 'CLEAR_FORM':

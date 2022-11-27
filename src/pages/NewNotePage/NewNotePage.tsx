@@ -16,7 +16,7 @@ import { HeaderInfo } from '../../models/header';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 import Feedback from '../../components/Feedback/Feedback';
 import { writeStateToLocalStorage } from '../../store/notesActions';
-import { getStatusColor } from '../../utils/formValidation';
+import { getStatusColor } from '../../utils/Form/formValidation';
 
 const NewNotePage = () => {
   const {
