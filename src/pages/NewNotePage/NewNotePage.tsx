@@ -23,11 +23,11 @@ const NewNotePage = () => {
     headingChangeHandler,
     tagsChangeHandler,
     checkboxChangeHandler,
-    clearFormHandler,
+    clearForm,
     descriptionChangeHandler,
     setNoteStatusToCreated,
     allTags,
-    feedbackVisibilityChangeHandler,
+    changeFeedbackVisibility,
   } = useNewNote();
 
   const navigate = useNavigate();
@@ -36,10 +36,11 @@ const NewNotePage = () => {
   const createNoteHandler = useCallback(
     (event: ButtonClickMouseEvent) => {
       dispatchNote<any>(writeStateToLocalStorage(newNoteForm));
+      clearForm();
       setNoteStatusToCreated();
-      feedbackVisibilityChangeHandler(true);
+      changeFeedbackVisibility(true);
     },
-    [dispatchNote, newNoteForm, setNoteStatusToCreated, feedbackVisibilityChangeHandler]
+    [dispatchNote, newNoteForm, setNoteStatusToCreated, changeFeedbackVisibility]
   );
 
   const headerInfo: HeaderInfo = useMemo(
@@ -68,7 +69,7 @@ const NewNotePage = () => {
         buttons={[]}
         message="Note created"
         isVisible={!!newNoteForm.isFeedbackVisible}
-        setVisibility={feedbackVisibilityChangeHandler}
+        setVisibility={changeFeedbackVisibility}
       />
 
       <PageContainer header={headerInfo}>
@@ -113,7 +114,7 @@ const NewNotePage = () => {
             Create
           </Button>
 
-          <Button type="button" designStyle="outline" onClick={clearFormHandler}>
+          <Button type="button" designStyle="outline" onClick={clearForm}>
             Clear
           </Button>
         </ButtonGroup>

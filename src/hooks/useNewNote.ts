@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { useSelector } from 'react-redux';
-import { InputChangeHandler, TextareaChangeHandler } from '../models/form';
+import { TextareaChangeHandler } from '../models/form';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice } from '../models/store';
@@ -79,7 +79,10 @@ const newNoteReducer: FormReducer = (state, action) => {
       };
 
     case 'CLEAR_FORM':
-      return initialState;
+      return {
+        ...initialState,
+        id: generateId(),
+      };
 
     default:
       return state;
@@ -110,11 +113,11 @@ const useNewNote = () => {
     dispatch({ type: 'SET_NOTE_CREATED' });
   };
 
-  const feedbackVisibilityChangeHandler = (isVisible: boolean) => {
+  const changeFeedbackVisibility = (isVisible: boolean) => {
     dispatch({ type: 'SET_FEEDBACK_VISIBILITY', feedbackVisibility: isVisible });
   };
 
-  const clearFormHandler = () => {
+  const clearForm = () => {
     dispatch({ type: 'CLEAR_FORM' });
   };
 
@@ -125,10 +128,10 @@ const useNewNote = () => {
     checkboxChangeHandler,
     descriptionChangeHandler,
     tagsChangeHandler,
-    clearFormHandler,
+    clearForm,
     setNoteStatusToCreated,
     allTags,
-    feedbackVisibilityChangeHandler,
+    changeFeedbackVisibility,
   };
 };
 
