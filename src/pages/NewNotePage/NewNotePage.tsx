@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 
 import PageContainer from '../../components/PageContainer/PageContainer';
 import Form from '../../components/Form/Form';
@@ -15,7 +15,8 @@ import { ButtonClickMouseEvent } from '../../models/form';
 import { HeaderInfo } from '../../models/header';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 import Feedback from '../../components/Feedback/Feedback';
-import { writeStateToLocalStorage } from '../../store/notesActions';
+// import { writeStateToLocalStorage } from '../../store/notesActions';
+import { getStatusColor } from '../../utils/Form/formValidation';
 
 const NewNotePage = () => {
   const {
@@ -23,24 +24,17 @@ const NewNotePage = () => {
     headingChangeHandler,
     tagsChangeHandler,
     checkboxChangeHandler,
-    clearFormHandler,
+    clearForm,
+    createNote,
     descriptionChangeHandler,
     setNoteStatusToCreated,
     allTags,
-    feedbackVisibilityChangeHandler,
+    hideFeedback,
   } = useNewNote();
 
-  const navigate = useNavigate();
-  const dispatchNote = useDispatch();
+  console.log('newNoteForm.formIsValid', newNoteForm.formIsValid);
 
-  const createNoteHandler = useCallback(
-    (event: ButtonClickMouseEvent) => {
-      dispatchNote<any>(writeStateToLocalStorage(newNoteForm));
-      setNoteStatusToCreated();
-      feedbackVisibilityChangeHandler(true);
-    },
-    [dispatchNote, newNoteForm, setNoteStatusToCreated, feedbackVisibilityChangeHandler]
-  );
+  const navigate = useNavigate();
 
   const headerInfo: HeaderInfo = useMemo(
     () => ({
@@ -48,7 +42,7 @@ const NewNotePage = () => {
       buttons: [
         {
           text: 'Add',
-          onClick: createNoteHandler,
+          onClick: createNote,
         },
 
         {
@@ -58,17 +52,17 @@ const NewNotePage = () => {
         },
       ],
     }),
-    [navigate, createNoteHandler]
+    [navigate, createNote]
   );
 
   return (
     <>
       <Feedback
-        status="success"
+        status={getStatusColor(newNoteForm.status)}
         buttons={[]}
-        message="Note created"
-        isVisible={!!newNoteForm.isFeedbackVisible}
-        setVisibility={feedbackVisibilityChangeHandler}
+        message={newNoteForm.feedback.message}
+        isVisible={newNoteForm.feedback.isVisible}
+        onClose={hideFeedback}
       />
 
       <PageContainer header={headerInfo}>
@@ -79,7 +73,7 @@ const NewNotePage = () => {
               type={'text'}
               label="Title"
               value={newNoteForm.heading}
-              onChange={headingChangeHandler}
+              onInputChange={headingChangeHandler}
             />
 
             <InputBox
@@ -103,17 +97,17 @@ const NewNotePage = () => {
             type={'text'}
             label="Description"
             value={newNoteForm.description}
-            onChange={descriptionChangeHandler}
+            onTextareaChange={descriptionChangeHandler}
             inputElementType="textarea"
           />
         </Form>
 
         <ButtonGroup>
-          <Button type="button" onClick={createNoteHandler}>
+          <Button type="button" onClick={createNote}>
             Create
           </Button>
 
-          <Button type="button" designStyle="outline" onClick={clearFormHandler}>
+          <Button type="button" designStyle="outline" onClick={clearForm}>
             Clear
           </Button>
         </ButtonGroup>

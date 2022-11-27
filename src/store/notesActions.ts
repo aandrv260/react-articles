@@ -1,7 +1,7 @@
 import { ThunkAction, AnyAction } from '@reduxjs/toolkit';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
-import { NotesSlice } from '../models/store';
+import { EditTag, NotesSlice } from '../models/store';
 import { notesSlice } from './';
 
 export const notesActions = notesSlice.actions;
@@ -24,6 +24,20 @@ export const writeStateToLocalStorage = (
 ): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
   return (dispatch, getState) => {
     dispatch(notesActions.create(newNote));
+
+    const state = getState();
+    const stateToJSON = JSON.stringify(state);
+
+    localStorage.setItem('NOTES_INFO', stateToJSON);
+  };
+};
+
+// TAG - EDIT / DELETE
+export const writeStateToLocalStorageAfterTagEdit = (
+  tags: EditTag
+): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
+  return (dispatch, getState) => {
+    dispatch(notesActions.editTag(tags));
 
     const state = getState();
     const stateToJSON = JSON.stringify(state);

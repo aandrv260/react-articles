@@ -16,7 +16,7 @@ const Notes = (props: NotesProps) => {
               heading={note.heading}
               tags={note.tags}
               isFeatured={note.isFeatured}
-              key={Math.random()}
+              key={note.id}
               id={note.id}
             />
           ))}

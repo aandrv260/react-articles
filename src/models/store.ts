@@ -7,3 +7,8 @@ export interface NotesSlice {
   filteredNotes: NotesInfo;
   filters: NoteFilters;
 }
+
+export type EditTag = {
+  oldTag: NoteTagInfo;
+  newTag: NoteTagInfo;
+};

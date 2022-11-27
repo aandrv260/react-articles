@@ -1,7 +1,7 @@
 import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
-import { NotesSlice } from '../models/store';
+import { NotesSlice, EditTag } from '../models/store';
 import { filterNotes } from './notesFiltersUtils';
 
 type Filter = string | NoteTagInfo[];
@@ -53,6 +53,28 @@ export const notesSlice = createSlice({
       });
     },
 
+    editTag(curState, action: PayloadAction<EditTag>) {
+      const { oldTag, newTag } = action.payload;
+      const indexOfOldTag = curState.allTags.findIndex(tag => tag.value === oldTag.value);
+
+      curState.allTags[indexOfOldTag].label = newTag.label;
+      curState.allTags[indexOfOldTag].value = newTag.value;
+
+      curState.notes.forEach((note, noteIndex) => {
+        note.tags.forEach((tag, tagIndex) => {
+          if (tag.value === oldTag.value) {
+            tag.value = newTag.value;
+            tag.label = newTag.label;
+          }
+        });
+      });
+
+      // Reset filtered notes
+      curState.filteredNotes = curState.notes;
+      curState.filters.heading = '';
+      curState.filters.tags = [];
+    },
+
     filterChangeHandler(curState, action: PayloadAction<Filter>) {
       const filterValue = action.payload;
 
@@ -67,8 +89,11 @@ export const notesSlice = createSlice({
 
     create(curState, action: PayloadAction<Note>) {
       const newNote = action.payload;
+      console.log('newNote === action.payload', newNote === action.payload);
 
       curState.notes.push(newNote);
+
+      // Reset the filtered notes
       curState.filteredNotes = curState.notes;
 
       if (curState.allTags.length === 0) {
@@ -83,9 +108,12 @@ export const notesSlice = createSlice({
 
       newNoteTagsIds.forEach(newNoteTag => {
         if (!allTagIds.includes(newNoteTag)) {
-          const [tagObject] = newNote.tags.filter(tag => tag.value === newNoteTag);
+          const indexOfTagObject = newNote.tags.findIndex(tag => tag.value === newNoteTag);
 
-          curState.allTags.push(tagObject);
+          if (indexOfTagObject) {
+            console.log();
+            curState.allTags.push(newNote.tags[indexOfTagObject]);
+          }
         }
       });
     },

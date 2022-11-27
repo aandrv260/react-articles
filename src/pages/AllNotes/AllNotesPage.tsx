@@ -24,7 +24,7 @@ const AllNotesPage = () => {
     buttons: [
       {
         text: 'Create',
-        onClick: () => navigate('/new'),
+        onClick: () => navigate('/new-note'),
       },
 
       {

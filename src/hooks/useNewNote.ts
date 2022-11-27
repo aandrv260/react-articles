@@ -1,84 +1,86 @@
 import { useReducer } from 'react';
-import { useSelector } from 'react-redux';
-import { Note } from '../models/notes';
-import { NoteTagInfo } from '../models/noteTags';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  FormReducer,
+  InputChangeHandler,
+  TagsChangeHandler,
+  TextareaChangeHandler,
+} from '../models/form';
 import { NotesSlice } from '../models/store';
+import { writeStateToLocalStorage } from '../store/notesActions';
+import { initialState, noFeedback } from '../utils/Form/form';
+import { entireFormIsValid, validateTextInput } from '../utils/Form/formValidation';
 import generateId from '../utils/generateId';
-
-type ActionType =
-  | 'CHANGE_HEADING'
-  | 'CHANGE_IS_FEATURED'
-  | 'CHANGE_TAGS'
-  | 'CHANGE_DESCRIPTION'
-  | 'SET_NOTE_CREATED'
-  | 'SET_FEEDBACK_VISIBILITY'
-  | 'CLEAR_FORM';
-
-interface NewNoteAction {
-  type: ActionType;
-  value?: string;
-  feedbackVisibility?: boolean;
-  tags?: NoteTagInfo[];
-}
-
-interface InitialCreateNoteState extends Note {
-  isNoteCreated?: boolean;
-  isFeedbackVisible?: boolean;
-}
-
-type FormReducer = (state: InitialCreateNoteState, action: NewNoteAction) => InitialCreateNoteState;
-type ChangeEvent<T> = React.ChangeEvent<T>;
-
-const initialState: InitialCreateNoteState = {
-  heading: '',
-  isFeatured: false,
-  isNoteCreated: false,
-  isFeedbackVisible: false,
-  description: '',
-  tags: [],
-  id: generateId(),
-};
 
 const newNoteReducer: FormReducer = (state, action) => {
   switch (action.type) {
-    case 'CHANGE_HEADING':
-      return {
-        ...state,
-        heading: action.value || action.value === '' ? action.value : state.heading,
-      };
+    case 'CHANGE_HEADING': {
+      return validateTextInput(
+        state,
+        { type: 'heading', value: action.value },
+        'The heading must have >= 5 characters.'
+      );
+    }
 
     case 'CHANGE_IS_FEATURED':
       return {
         ...state,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
         isFeatured: !state.isFeatured,
       };
 
     case 'CHANGE_TAGS':
       return {
         ...state,
-        tags: action.tags ? action.tags : state.tags,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        tags: action.tags || state.tags,
       };
 
-    case 'CHANGE_DESCRIPTION':
-      return {
-        ...state,
-        description: action.value || action.value === '' ? action.value : state.description,
-      };
+    case 'CHANGE_DESCRIPTION': {
+      return validateTextInput(
+        state,
+        { type: 'description', value: action.value },
+        'Description must contain at least 20 characters.'
+      );
+    }
 
     case 'SET_NOTE_CREATED':
       return {
         ...state,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        status: 'NOTE_CREATED',
+        feedback: {
+          message: 'Successfully created your new note!',
+          isVisible: true,
+        },
         isNoteCreated: true,
       };
 
-    case 'SET_FEEDBACK_VISIBILITY':
+    case 'INPUT_INVALID_ON_SUBMIT':
       return {
         ...state,
-        isFeedbackVisible: !!action.feedbackVisibility,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        status: 'VALIDATION_ISSUE',
+        feedback: {
+          message: 'Form invalid',
+          isVisible: true,
+        },
+      };
+
+    case 'HIDE_FEEDBACK':
+      return {
+        ...state,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        feedback: noFeedback,
       };
 
     case 'CLEAR_FORM':
-      return initialState;
+      return {
+        ...initialState,
+        formIsValid: false,
+        id: generateId(),
+      };
 
     default:
       return state;
@@ -87,9 +89,11 @@ const newNoteReducer: FormReducer = (state, action) => {
 
 const useNewNote = () => {
   const [form, dispatch] = useReducer(newNoteReducer, initialState);
+  const dispatchNote = useDispatch();
+
   const allTags = useSelector((state: NotesSlice) => state.allTags);
 
-  const headingChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const headingChangeHandler: InputChangeHandler = event => {
     dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
   };
 
@@ -97,11 +101,11 @@ const useNewNote = () => {
     dispatch({ type: 'CHANGE_IS_FEATURED' });
   };
 
-  const descriptionChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const descriptionChangeHandler: TextareaChangeHandler = event => {
     dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
   };
 
-  const tagsChangeHandler = (tags: NoteTagInfo[]) => {
+  const tagsChangeHandler: TagsChangeHandler = tags => {
     dispatch({ type: 'CHANGE_TAGS', tags });
   };
 
@@ -109,12 +113,24 @@ const useNewNote = () => {
     dispatch({ type: 'SET_NOTE_CREATED' });
   };
 
-  const feedbackVisibilityChangeHandler = (isVisible: boolean) => {
-    dispatch({ type: 'SET_FEEDBACK_VISIBILITY', feedbackVisibility: isVisible });
+  const hideFeedback = () => {
+    dispatch({ type: 'HIDE_FEEDBACK' });
   };
 
-  const clearFormHandler = () => {
+  const clearForm = () => {
     dispatch({ type: 'CLEAR_FORM' });
+  };
+
+  const createNote = () => {
+    if (!form.formIsValid) {
+      dispatch({ type: 'INPUT_INVALID_ON_SUBMIT' });
+
+      return;
+    }
+
+    dispatchNote<any>(writeStateToLocalStorage(form));
+    clearForm();
+    setNoteStatusToCreated();
   };
 
   return {
@@ -124,10 +140,11 @@ const useNewNote = () => {
     checkboxChangeHandler,
     descriptionChangeHandler,
     tagsChangeHandler,
-    clearFormHandler,
+    clearForm,
+    createNote,
     setNoteStatusToCreated,
     allTags,
-    feedbackVisibilityChangeHandler,
+    hideFeedback,
   };
 };
 
