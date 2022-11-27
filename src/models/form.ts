@@ -8,6 +8,7 @@ export type ActionType =
   | 'CHANGE_TAGS'
   | 'CHANGE_DESCRIPTION'
   | 'SET_NOTE_CREATED'
+  | 'INPUT_INVALID_ON_SUBMIT'
   | 'HIDE_FEEDBACK'
   | 'CLEAR_FORM';
 

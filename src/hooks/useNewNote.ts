@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   FormReducer,
@@ -8,6 +8,7 @@ import {
   TextareaChangeHandler,
 } from '../models/form';
 import { NotesSlice } from '../models/store';
+import { writeStateToLocalStorage } from '../store/notesActions';
 import { initialState, noFeedback } from '../utils/Form/form';
 import { entireFormIsValid, validateTextInput } from '../utils/Form/formValidation';
 import generateId from '../utils/generateId';
@@ -56,6 +57,17 @@ const newNoteReducer: FormReducer = (state, action) => {
         isNoteCreated: true,
       };
 
+    case 'INPUT_INVALID_ON_SUBMIT':
+      return {
+        ...state,
+        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        status: 'VALIDATION_ISSUE',
+        feedback: {
+          message: 'Form invalid',
+          isVisible: true,
+        },
+      };
+
     case 'HIDE_FEEDBACK':
       return {
         ...state,
@@ -77,6 +89,8 @@ const newNoteReducer: FormReducer = (state, action) => {
 
 const useNewNote = () => {
   const [form, dispatch] = useReducer(newNoteReducer, initialState);
+  const dispatchNote = useDispatch();
+
   const allTags = useSelector((state: NotesSlice) => state.allTags);
 
   const headingChangeHandler: InputChangeHandler = event => {
@@ -107,6 +121,18 @@ const useNewNote = () => {
     dispatch({ type: 'CLEAR_FORM' });
   };
 
+  const createNote = () => {
+    if (!form.formIsValid) {
+      dispatch({ type: 'INPUT_INVALID_ON_SUBMIT' });
+
+      return;
+    }
+
+    dispatchNote<any>(writeStateToLocalStorage(form));
+    clearForm();
+    setNoteStatusToCreated();
+  };
+
   return {
     newNoteForm: form,
     dispatchForm: dispatch,
@@ -115,6 +141,7 @@ const useNewNote = () => {
     descriptionChangeHandler,
     tagsChangeHandler,
     clearForm,
+    createNote,
     setNoteStatusToCreated,
     allTags,
     hideFeedback,

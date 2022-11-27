@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 
 import PageContainer from '../../components/PageContainer/PageContainer';
 import Form from '../../components/Form/Form';
@@ -15,7 +15,7 @@ import { ButtonClickMouseEvent } from '../../models/form';
 import { HeaderInfo } from '../../models/header';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 import Feedback from '../../components/Feedback/Feedback';
-import { writeStateToLocalStorage } from '../../store/notesActions';
+// import { writeStateToLocalStorage } from '../../store/notesActions';
 import { getStatusColor } from '../../utils/Form/formValidation';
 
 const NewNotePage = () => {
@@ -25,27 +25,16 @@ const NewNotePage = () => {
     tagsChangeHandler,
     checkboxChangeHandler,
     clearForm,
+    createNote,
     descriptionChangeHandler,
     setNoteStatusToCreated,
     allTags,
     hideFeedback,
-    // changeFeedbackVisibility,
   } = useNewNote();
 
   console.log('newNoteForm.formIsValid', newNoteForm.formIsValid);
 
   const navigate = useNavigate();
-  const dispatchNote = useDispatch();
-
-  const createNoteHandler = useCallback(
-    (event: ButtonClickMouseEvent) => {
-      dispatchNote<any>(writeStateToLocalStorage(newNoteForm));
-      clearForm();
-      setNoteStatusToCreated();
-      // changeFeedbackVisibility(true);
-    },
-    [dispatchNote, newNoteForm, setNoteStatusToCreated, clearForm]
-  );
 
   const headerInfo: HeaderInfo = useMemo(
     () => ({
@@ -53,7 +42,7 @@ const NewNotePage = () => {
       buttons: [
         {
           text: 'Add',
-          onClick: createNoteHandler,
+          onClick: createNote,
         },
 
         {
@@ -63,7 +52,7 @@ const NewNotePage = () => {
         },
       ],
     }),
-    [navigate, createNoteHandler]
+    [navigate, createNote]
   );
 
   return (
@@ -114,7 +103,7 @@ const NewNotePage = () => {
         </Form>
 
         <ButtonGroup>
-          <Button type="button" onClick={createNoteHandler}>
+          <Button type="button" onClick={createNote}>
             Create
           </Button>
 
