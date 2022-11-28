@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
+import { InputChangeHandler } from '../../models/form';
 import styles from './Checkbox.module.scss';
 
 interface CheckboxProps {
   checked: boolean;
   label?: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onChange: InputChangeHandler;
 }
 
 const Checkbox = ({ checked, onChange, label }: CheckboxProps) => {

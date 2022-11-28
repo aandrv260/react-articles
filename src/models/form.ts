@@ -10,7 +10,9 @@ export type ActionType =
   | 'SET_NOTE_CREATED'
   | 'INPUT_INVALID_ON_SUBMIT'
   | 'HIDE_FEEDBACK'
-  | 'CLEAR_FORM';
+  | 'CLEAR_FORM'
+  | 'CLEAR_CHANGES'
+  | 'INITIALIZE';
 
 export type FormStatus = 'NOTE_CREATED' | 'VALIDATION_ISSUE' | 'IN_EDIT' | 'FORM_EMPTY';
 export type FeedbackStatus = 'success' | 'failure' | 'warning';
@@ -46,3 +48,5 @@ export type FormInputChangeHandler = (
   event: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
 ) => void;
 export type TagsChangeHandler = (tags: NoteTagInfo[]) => void;
+
+export type FormType = 'create' | 'edit';

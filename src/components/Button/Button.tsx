@@ -2,12 +2,14 @@ import React from 'react';
 import { ButtonStyles } from '../../models/header';
 import styles from './Button.module.scss';
 
+export type ButtonClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => void;
+
 export interface ButtonProps {
   children?: React.ReactNode;
   type?: 'submit' | 'button' | 'reset';
   designStyle?: ButtonStyles;
   isRed?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: ButtonClickHandler;
 }
 
 const Button: React.FC<ButtonProps> = ({ type, children, onClick, designStyle, isRed }) => {
