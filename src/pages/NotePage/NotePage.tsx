@@ -8,8 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NotesSlice } from '../../models/store';
 import PageNotFound from '../PageNotFound/PageNotFound';
 import { notesActions, writeStateToLocalStorageAfterNoteDelete } from '../../store/notesActions';
+import Modal from '../../components/Modal/Modal';
+import ConfirmDelete from '../../components/ConfirmDelete/ConfirmDelete';
 
 const NotePage = () => {
+  const [deleteConfirmModalIsVisible, setDeleteConfirmModalIsVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const noteId = useQuery();
 
@@ -34,9 +37,9 @@ const NotePage = () => {
       {
         text: 'Delete',
         isRed: true,
+        designStyle: 'outline',
         onClick: () => {
-          dispatch<any>(writeStateToLocalStorageAfterNoteDelete(noteId));
-          navigate('/');
+          setDeleteConfirmModalIsVisible(true);
         },
       },
 
@@ -50,10 +53,23 @@ const NotePage = () => {
     ],
   };
 
+  const closeModalHandler = () => setDeleteConfirmModalIsVisible(false);
+
+  const deleteConfirmHandler = () => {
+    dispatch<any>(writeStateToLocalStorageAfterNoteDelete(noteId));
+    navigate('/');
+  };
+
   return (
-    <PageContainer header={headerInfo}>
-      <Markdown>{markdown}</Markdown>
-    </PageContainer>
+    <>
+      <Modal isVisible={deleteConfirmModalIsVisible}>
+        <ConfirmDelete onClose={closeModalHandler} onConfirm={deleteConfirmHandler} />
+      </Modal>
+
+      <PageContainer header={headerInfo}>
+        <Markdown>{markdown}</Markdown>
+      </PageContainer>
+    </>
   );
 };
 

@@ -26,7 +26,17 @@
     color: var(--color-main-text);
   }
 
-  &--red {
+  &--full.btn--red {
+    background-color: var(--color-red);
+    color: #fff;
+
+    &:hover {
+      background-color: var(--color-red-shade);
+      color: #fff;
+    }
+  }
+
+  &--outline.btn--red {
     background-color: transparent;
     border-color: var(--color-red);
     color: var(--color-red);
