@@ -10,7 +10,6 @@ type NoteProps = NoteInfo;
 
 const Note = (props: NoteProps) => {
   const { heading, id, tags, isFeatured } = props;
-
   const noteSlug = useMemo(() => generateSlug(heading), [heading]);
 
   return (

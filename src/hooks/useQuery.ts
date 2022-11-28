@@ -1,15 +1,30 @@
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { isObjectEmpty } from '../utils/general';
+
+interface LooseObject {
+  [key: string]: string;
+}
 
 /**
  *  Reads the ***query*** parameters
- * @returns The note id which is read from the query parameters
+ * @param params The parameters' names that are requested by the user
+ * @returns The note parameters which are read from the query parameters OR if there are not parameters with those names, returns undefined
  */
-const useQuery = () => {
-  const { search } = useLocation();
-  const query = search?.split('?id=')[1]?.split('&')[0];
+const useQuery = (params: string[]): LooseObject | undefined => {
+  const [searchParams] = useSearchParams();
 
-  return useMemo(() => query, [query]);
+  const query = params.reduce<LooseObject>((acc, cur) => {
+    acc[cur] = searchParams.get(cur) || '';
+
+    return acc;
+  }, {});
+
+  return useMemo(() => {
+    if (isObjectEmpty(query)) return undefined;
+
+    return query;
+  }, [query]);
 };
 
 export default useQuery;
