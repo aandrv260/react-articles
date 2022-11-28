@@ -3,6 +3,7 @@ import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { EditTag, NotesSlice } from '../models/store';
 import { notesSlice } from './';
+import { saveToLocalStorage } from './actionUtils';
 
 export const notesActions = notesSlice.actions;
 
@@ -25,10 +26,18 @@ export const writeStateToLocalStorage = (
   return (dispatch, getState) => {
     dispatch(notesActions.create(newNote));
 
-    const state = getState();
-    const stateToJSON = JSON.stringify(state);
+    saveToLocalStorage(getState);
+  };
+};
 
-    localStorage.setItem('NOTES_INFO', stateToJSON);
+// Note - Edit / Delete
+export const writeStateToLocalStorageAfterNoteDelete = (
+  id: string
+): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
+  return (dispatch, getState) => {
+    dispatch(notesActions.deleteNote(id));
+
+    saveToLocalStorage(getState);
   };
 };
 
@@ -39,10 +48,7 @@ export const writeStateToLocalStorageAfterTagEdit = (
   return (dispatch, getState) => {
     dispatch(notesActions.editTag(tags));
 
-    const state = getState();
-    const stateToJSON = JSON.stringify(state);
-
-    localStorage.setItem('NOTES_INFO', stateToJSON);
+    saveToLocalStorage(getState);
   };
 };
 
@@ -52,9 +58,6 @@ export const writeStateToLocalStorageAfterTagDelete = (
   return (dispatch, getState) => {
     dispatch(notesActions.deleteTag(tag));
 
-    const state = getState();
-    const stateToJSON = JSON.stringify(state);
-
-    localStorage.setItem('NOTES_INFO', stateToJSON);
+    saveToLocalStorage(getState);
   };
 };

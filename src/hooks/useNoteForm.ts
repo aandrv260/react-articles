@@ -1,19 +1,20 @@
-import { useReducer } from 'react';
+import { useReducer, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
   FormReducer,
+  FormType,
   InputChangeHandler,
   TagsChangeHandler,
   TextareaChangeHandler,
 } from '../models/form';
 import { NotesSlice } from '../models/store';
 import { writeStateToLocalStorage } from '../store/notesActions';
-import { initialState, noFeedback } from '../utils/Form/form';
+import { convertNoteToFormState, initialState, noFeedback } from '../utils/Form/form';
 import { entireFormIsValid, validateTextInput } from '../utils/Form/formValidation';
 import generateId from '../utils/generateId';
 
-const newNoteReducer: FormReducer = (state, action) => {
+const noteFormReducer: FormReducer = (state, action) => {
   switch (action.type) {
     case 'CHANGE_HEADING': {
       return validateTextInput(
@@ -87,11 +88,17 @@ const newNoteReducer: FormReducer = (state, action) => {
   }
 };
 
-const useNewNote = () => {
-  const [form, dispatch] = useReducer(newNoteReducer, initialState);
-  const dispatchNote = useDispatch();
+const useNoteForm = (formType: FormType, noteId?: string) => {
+  const state = useSelector((state: NotesSlice) => state);
+  const allTags = state.allTags;
+  const curNote = state.notes.find(note => note.id === noteId);
 
-  const allTags = useSelector((state: NotesSlice) => state.allTags);
+  const initialState = useMemo(() => {
+    return convertNoteToFormState(curNote, formType, noteId);
+  }, []);
+
+  const [form, dispatch] = useReducer(noteFormReducer, initialState);
+  const dispatchNote = useDispatch();
 
   const headingChangeHandler: InputChangeHandler = event => {
     dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
@@ -133,19 +140,26 @@ const useNewNote = () => {
     setNoteStatusToCreated();
   };
 
+  const editForm = () => {
+    if (!form.formIsValid) {
+      dispatch({ type: 'INPUT_INVALID_ON_SUBMIT' });
+
+      return;
+    }
+  };
+
   return {
-    newNoteForm: form,
+    form,
     dispatchForm: dispatch,
     headingChangeHandler,
     checkboxChangeHandler,
     descriptionChangeHandler,
     tagsChangeHandler,
     clearForm,
-    createNote,
-    setNoteStatusToCreated,
+    submitForm: formType === 'create' ? createNote : editForm,
     allTags,
     hideFeedback,
   };
 };
 
-export default useNewNote;
+export default useNoteForm;

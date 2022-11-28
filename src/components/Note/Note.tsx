@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import slugify from 'slugify';
 import { NoteInfo } from '../../models/notes';
+import { generateSlug } from '../../utils/urlSlugs';
 import NoteTags from '../NoteTags/NoteTags';
 import styles from './Note.module.scss';
 
@@ -9,13 +10,7 @@ type NoteProps = NoteInfo;
 
 const Note = (props: NoteProps) => {
   const { heading, id, tags, isFeatured } = props;
-
-  const noteSlug = useMemo(() => {
-    return slugify(heading, {
-      lower: true,
-      trim: true,
-    });
-  }, [heading]);
+  const noteSlug = useMemo(() => generateSlug(heading), [heading]);
 
   return (
     <Link to={`/note/${noteSlug}?id=${id}`} className={styles['note']}>

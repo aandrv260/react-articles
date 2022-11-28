@@ -9,30 +9,27 @@ import FormGroup from '../../components/FormGroup/FormGroup';
 import Checkbox from '../../components/Checkbox/Checkbox';
 import Button from '../../components/Button/Button';
 
-import useNewNote from '../../hooks/useNewNote';
-
 import { ButtonClickMouseEvent } from '../../models/form';
 import { HeaderInfo } from '../../models/header';
 import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 import Feedback from '../../components/Feedback/Feedback';
 // import { writeStateToLocalStorage } from '../../store/notesActions';
 import { getStatusColor } from '../../utils/Form/formValidation';
+import NoteForm from '../../components/NoteForm/NoteForm';
+import useNoteForm from '../../hooks/useNoteForm';
 
 const NewNotePage = () => {
   const {
-    newNoteForm,
+    form: newNoteForm,
     headingChangeHandler,
     tagsChangeHandler,
     checkboxChangeHandler,
     clearForm,
-    createNote,
+    submitForm: createNote,
     descriptionChangeHandler,
-    setNoteStatusToCreated,
     allTags,
     hideFeedback,
-  } = useNewNote();
-
-  console.log('newNoteForm.formIsValid', newNoteForm.formIsValid);
+  } = useNoteForm('create');
 
   const navigate = useNavigate();
 
@@ -66,51 +63,20 @@ const NewNotePage = () => {
       />
 
       <PageContainer header={headerInfo}>
-        <Form hasGroups>
-          <FormGroup>
-            <InputBox
-              id="note-title"
-              type={'text'}
-              label="Title"
-              value={newNoteForm.heading}
-              onInputChange={headingChangeHandler}
-            />
-
-            <InputBox
-              id="note-tags"
-              label="Tags"
-              options={allTags}
-              multiSelectValue={newNoteForm.tags}
-              onMultiSelectChange={tagsChangeHandler}
-              inputElementType="multi-select"
-            />
-          </FormGroup>
-
-          <Checkbox
-            checked={!!newNoteForm.isFeatured}
-            onChange={checkboxChangeHandler}
-            label="Featured"
-          />
-
-          <InputBox
-            id="note-description"
-            type={'text'}
-            label="Description"
-            value={newNoteForm.description}
-            onTextareaChange={descriptionChangeHandler}
-            inputElementType="textarea"
-          />
-        </Form>
-
-        <ButtonGroup>
-          <Button type="button" onClick={createNote}>
-            Create
-          </Button>
-
-          <Button type="button" designStyle="outline" onClick={clearForm}>
-            Clear
-          </Button>
-        </ButtonGroup>
+        <NoteForm
+          title={{ value: newNoteForm.heading, onInputChange: headingChangeHandler }}
+          tagsInput={{
+            multiSelectValue: newNoteForm.tags,
+            onChange: tagsChangeHandler,
+            options: allTags,
+          }}
+          checkbox={{ checked: !!newNoteForm?.isFeatured, onChange: checkboxChangeHandler }}
+          description={{ value: newNoteForm.description, onChange: descriptionChangeHandler }}
+          buttons={[
+            { text: 'Create', onClick: createNote },
+            { text: 'Clear', onClick: clearForm, designStyle: 'outline' },
+          ]}
+        />
       </PageContainer>
     </>
   );

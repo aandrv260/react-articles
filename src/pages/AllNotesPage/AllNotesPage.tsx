@@ -9,6 +9,7 @@ import Notes from '../../components/Notes/Notes';
 import { HeaderInfo } from '../../models/header';
 import { NotesSlice } from '../../models/store';
 import Modal from '../../components/Modal/Modal';
+import EditTags from '../../components/EditTags/EditTags';
 
 const AllNotesPage = () => {
   const navigate = useNavigate();
@@ -38,7 +39,10 @@ const AllNotesPage = () => {
   return (
     <PageContainer header={headerInfo}>
       {modalIsVisible && (
-        <Modal isVisible={modalIsVisible} closeHandler={setModalIsVisible.bind(null, false)} />
+        // <Modal isVisible={modalIsVisible} closeHandler={setModalIsVisible.bind(null, false)} />
+        <Modal isVisible={modalIsVisible}>
+          <EditTags closeHandler={setModalIsVisible.bind(null, false)} />
+        </Modal>
       )}
       <FilterNotes />
       <Notes notes={notes} />

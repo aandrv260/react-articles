@@ -1,11 +1,11 @@
 import { WritableDraft } from 'immer/dist/internal';
-import { NoteInfo } from '../models/notes';
+import { Note, NoteInfo } from '../models/notes';
 import { NotesSlice } from '../models/store';
 
 // TYPES
 type FiltersIsEmptyCheck = (curState: WritableDraft<NotesSlice>) => boolean;
 type FilterCheck = (curState: WritableDraft<NotesSlice>, note: WritableDraft<NoteInfo>) => boolean;
-type FilterNotes = (curState: WritableDraft<NotesSlice>, setCondition: FilterCheck) => NoteInfo[];
+type FilterNotes = (curState: WritableDraft<NotesSlice>, setCondition: FilterCheck) => Note[];
 
 // UTIL FUNCTIONS
 export const areFiltersEmpty: FiltersIsEmptyCheck = curState => {
@@ -41,7 +41,7 @@ export const areBothFiltersApplied: FilterCheck = (curState, note) => {
 
 export const getFilteredNotes: FilterNotes = (curState, setCondition) => {
   const allNotes = curState.notes;
-  const newNotes: NoteInfo[] = [];
+  const newNotes: Note[] = [];
 
   // Loop through each note and if it matches the condition
   // from the callback, put it in the newNotes array
@@ -56,7 +56,7 @@ export const getFilteredNotes: FilterNotes = (curState, setCondition) => {
 
 export const filterNotes = (curState: WritableDraft<NotesSlice>) => {
   const { filters } = curState;
-  let filteredNotes: NoteInfo[] = [];
+  let filteredNotes: Note[] = [];
 
   // If both filters are empty, display all notes
   if (areFiltersEmpty(curState)) {

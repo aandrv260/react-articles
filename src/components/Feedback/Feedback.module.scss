@@ -23,16 +23,16 @@
   }
 
   &--success {
-    background-color: #2aa97a;
+    background-color: var(--color-green);
     color: #000;
   }
 
   &--warning {
-    background-color: #c89f23;
+    background-color: var(--color-warning);
   }
 
   &--failure {
-    background-color: #762424;
+    background-color: var(--color-red);
     color: #fff;
   }
 }
