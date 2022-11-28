@@ -27,18 +27,10 @@ const EditNotePage = () => {
     descriptionChangeHandler,
     headingChangeHandler,
     hideFeedback,
-    submitForm,
+    resetEditForm,
+    submitForm: editForm,
     tagsChangeHandler,
   } = useNoteForm('edit', query?.id);
-
-  const dispatch = useDispatch();
-
-  const confirmEditHandler = () => {
-    dispatch<any>(writeStateToLocalStorageAfterNoteEdit(form));
-    navigate('/');
-  };
-
-  const resetFormHandler = () => {};
 
   const headerInfo: HeaderInfo = {
     heading: `Edit ${curNote?.heading || ''}`,
@@ -46,7 +38,7 @@ const EditNotePage = () => {
       {
         text: 'Confirm',
         designStyle: 'full',
-        onClick: confirmEditHandler,
+        onClick: editForm,
       },
 
       {
@@ -74,8 +66,8 @@ const EditNotePage = () => {
           checkbox={{ checked: !!form?.isFeatured, onChange: checkboxChangeHandler }}
           description={{ value: form.description, onChange: descriptionChangeHandler }}
           buttons={[
-            { text: 'Confirm', designStyle: 'full', onClick: confirmEditHandler },
-            { text: 'Reset', designStyle: 'outline', onClick: resetFormHandler },
+            { text: 'Confirm', designStyle: 'full', onClick: editForm },
+            { text: 'Reset', designStyle: 'outline', onClick: resetEditForm },
           ]}
         />
       </PageContainer>

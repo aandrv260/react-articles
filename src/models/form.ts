@@ -11,16 +11,22 @@ export type ActionType =
   | 'INPUT_INVALID_ON_SUBMIT'
   | 'HIDE_FEEDBACK'
   | 'CLEAR_FORM'
-  | 'CLEAR_CHANGES'
-  | 'INITIALIZE';
+  | 'RESET_EDIT_FORM';
 
-export type FormStatus = 'NOTE_CREATED' | 'VALIDATION_ISSUE' | 'IN_EDIT' | 'FORM_EMPTY';
+export type FormStatus =
+  | 'NOTE_CREATED'
+  | 'VALIDATION_ISSUE'
+  | 'IN_EDIT'
+  | 'FORM_EMPTY'
+  | 'FORM_RESET';
+
 export type FeedbackStatus = 'success' | 'failure' | 'warning';
 
 export interface NewNoteAction {
   type: ActionType;
   value?: string;
   tags?: NoteTagInfo[];
+  curNote?: Note;
 }
 
 interface NoteFormFeedback {

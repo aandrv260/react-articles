@@ -1,5 +1,6 @@
 import { useReducer, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import {
   FormReducer,
@@ -8,8 +9,12 @@ import {
   TagsChangeHandler,
   TextareaChangeHandler,
 } from '../models/form';
+import { Note } from '../models/notes';
 import { NotesSlice } from '../models/store';
-import { writeStateToLocalStorage } from '../store/notesActions';
+import {
+  writeStateToLocalStorage,
+  writeStateToLocalStorageAfterNoteEdit,
+} from '../store/notesActions';
 import { convertNoteToFormState, initialState, noFeedback } from '../utils/Form/form';
 import { entireFormIsValid, validateTextInput } from '../utils/Form/formValidation';
 import generateId from '../utils/generateId';
@@ -83,12 +88,24 @@ const noteFormReducer: FormReducer = (state, action) => {
         id: generateId(),
       };
 
+    case 'RESET_EDIT_FORM':
+      return {
+        ...action?.curNote!,
+        status: 'FORM_RESET',
+        formIsValid: true,
+        feedback: {
+          message: 'Form reset successfully!',
+          isVisible: true,
+        },
+      };
+
     default:
       return state;
   }
 };
 
 const useNoteForm = (formType: FormType, noteId?: string) => {
+  const navigate = useNavigate();
   const allNotes = useSelector((store: NotesSlice) => store.notes);
   const allTags = useSelector((state: NotesSlice) => state.allTags);
   const noteExists = allNotes.some(note => note.id === noteId);
@@ -158,10 +175,22 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
 
       return;
     }
+
+    dispatchNote<any>(writeStateToLocalStorageAfterNoteEdit(form));
+    navigate('/');
   };
 
   // DO THIS AFTER YOU FIX THE RELOAD BUG
-  const resetEditForm = () => {};
+  const resetEditForm = () => {
+    if (curNote) {
+      dispatch({ type: 'RESET_EDIT_FORM', curNote });
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return {
     form,
