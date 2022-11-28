@@ -19,7 +19,10 @@ const App = () => {
     <Container>
       <Routes>
         <Route path="/" element={<AllNotesPage />} />
-        <Route path="/note/:title" element={<NotePage />} />
+        <Route path="/note/:title">
+          <Route index element={<NotePage />} />
+          <Route path="edit" element={<AllNotesPage />} />
+        </Route>
         <Route path="/new-note" element={<NewNotePage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>

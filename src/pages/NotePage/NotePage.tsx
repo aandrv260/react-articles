@@ -10,6 +10,7 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 import { notesActions, writeStateToLocalStorageAfterNoteDelete } from '../../store/notesActions';
 import Modal from '../../components/Modal/Modal';
 import ConfirmDelete from '../../components/ConfirmDelete/ConfirmDelete';
+import { generateSlug } from '../../utils/urlSlugs';
 
 const NotePage = () => {
   const [deleteConfirmModalIsVisible, setDeleteConfirmModalIsVisible] = useState<boolean>(false);
@@ -31,7 +32,9 @@ const NotePage = () => {
     buttons: [
       {
         text: 'Edit',
-        onClick: () => {},
+        onClick: () => {
+          navigate(`/note/${generateSlug(note.heading)}/edit?id=${note.id}`);
+        },
       },
 
       {
