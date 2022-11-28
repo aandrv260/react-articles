@@ -89,11 +89,23 @@ const noteFormReducer: FormReducer = (state, action) => {
 };
 
 const useNoteForm = (formType: FormType, noteId?: string) => {
-  const state = useSelector((state: NotesSlice) => state);
-  const allTags = state.allTags;
-  const curNote = state.notes.find(note => note.id === noteId);
+  const allNotes = useSelector((store: NotesSlice) => store.notes);
+  const allTags = useSelector((state: NotesSlice) => state.allTags);
+  const noteExists = allNotes.some(note => note.id === noteId);
+  const curNote = allNotes.find(note => note.id === noteId);
 
   const initialState = useMemo(() => {
+    // This IF statement fixes the bug where on reload, the input fields are empty
+    // because the state has not been fetched from the local storage yet
+    // !! This is a temporary fix because it is not really good to use side effects in the useMemo() hook
+    if (!noteExists) {
+      const stateFromLocalStorage: NotesSlice =
+        JSON.parse(localStorage.getItem('NOTES_INFO') || '') || initialState;
+      const curNote = stateFromLocalStorage.notes.find(note => note.id === noteId);
+
+      return convertNoteToFormState(curNote, formType, noteId);
+    }
+
     return convertNoteToFormState(curNote, formType, noteId);
   }, []);
 
@@ -148,6 +160,9 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
     }
   };
 
+  // DO THIS AFTER YOU FIX THE RELOAD BUG
+  const resetEditForm = () => {};
+
   return {
     form,
     dispatchForm: dispatch,
@@ -155,6 +170,7 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
     checkboxChangeHandler,
     descriptionChangeHandler,
     tagsChangeHandler,
+    resetEditForm,
     clearForm,
     submitForm: formType === 'create' ? createNote : editForm,
     allTags,

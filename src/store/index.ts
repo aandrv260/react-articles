@@ -1,4 +1,5 @@
 import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
+import { NoteFormState } from '../models/form';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice, EditTag } from '../models/store';
@@ -28,6 +29,19 @@ export const notesSlice = createSlice({
       return {
         ...action.payload,
       };
+    },
+
+    editNote(curState, action: PayloadAction<NoteFormState>) {
+      // TODO: Refactor the findIndex functionality that repeats
+      const editedNote = action.payload;
+      const indexOfNote = curState.notes.findIndex(note => note.id === editedNote.id);
+
+      curState.notes[indexOfNote].heading = editedNote.heading;
+      curState.notes[indexOfNote].description = editedNote.description;
+      curState.notes[indexOfNote].isFeatured = editedNote.isFeatured;
+      curState.notes[indexOfNote].tags = editedNote.tags;
+
+      curState.filteredNotes = curState.notes;
     },
 
     deleteNote(curState, action: PayloadAction<string>) {

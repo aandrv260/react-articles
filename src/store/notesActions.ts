@@ -1,4 +1,5 @@
 import { ThunkAction, AnyAction } from '@reduxjs/toolkit';
+import { NoteFormState } from '../models/form';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { EditTag, NotesSlice } from '../models/store';
@@ -25,12 +26,20 @@ export const writeStateToLocalStorage = (
 ): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
   return (dispatch, getState) => {
     dispatch(notesActions.create(newNote));
-
     saveToLocalStorage(getState);
   };
 };
 
 // Note - Edit / Delete
+export const writeStateToLocalStorageAfterNoteEdit = (
+  editedNote: NoteFormState
+): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
+  return (dispatch, getState) => {
+    dispatch<any>(notesActions.editNote(editedNote));
+    saveToLocalStorage(getState);
+  };
+};
+
 export const writeStateToLocalStorageAfterNoteDelete = (
   id: string
 ): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
