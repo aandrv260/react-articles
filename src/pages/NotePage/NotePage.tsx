@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Markdown from 'markdown-to-jsx';
 
+import styles from './NotePage.module.scss';
+
 import PageContainer from '../../components/PageContainer/PageContainer';
 import { HeaderInfo } from '../../models/header';
 import useQuery from '../../hooks/useQuery';
@@ -70,8 +72,8 @@ const NotePage = () => {
         <ConfirmDelete onClose={closeModalHandler} onConfirm={deleteConfirmHandler} />
       </Modal>
 
-      <PageContainer header={headerInfo}>
-        <Markdown>{markdown}</Markdown>
+      <PageContainer className={styles['note-page']} header={headerInfo}>
+        <Markdown options={{ disableParsingRawHTML: true }}>{markdown}</Markdown>
       </PageContainer>
     </>
   );

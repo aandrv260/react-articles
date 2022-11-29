@@ -1,20 +1,18 @@
 import { useReducer, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  FormReducer,
-  FormType,
-  InputChangeHandler,
-  TagsChangeHandler,
-  TextareaChangeHandler,
-} from '../models/form';
+import { FormEventHandlers, FormReducer, FormType, NoteFormState } from '../models/form';
 import { NotesSlice } from '../models/store';
-import { writeStateToLocalStorage } from '../store/notesActions';
+import { initialReduxState } from '../store';
+import {
+  writeStateToLocalStorage,
+  writeStateToLocalStorageAfterNoteEdit,
+} from '../store/notesActions';
 import { convertNoteToFormState, initialState, noFeedback } from '../utils/Form/form';
-import { entireFormIsValid, validateTextInput } from '../utils/Form/formValidation';
+import { validateInputsAndReturnResult, validateTextInput } from '../utils/Form/formValidation';
 import generateId from '../utils/generateId';
 
-const noteFormReducer: FormReducer = (state, action) => {
+const noteFormReducer: FormReducer = (state, action): NoteFormState => {
   switch (action.type) {
     case 'CHANGE_HEADING': {
       return validateTextInput(
@@ -27,14 +25,14 @@ const noteFormReducer: FormReducer = (state, action) => {
     case 'CHANGE_IS_FEATURED':
       return {
         ...state,
-        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        validation: validateInputsAndReturnResult(state.heading, state.description),
         isFeatured: !state.isFeatured,
       };
 
     case 'CHANGE_TAGS':
       return {
         ...state,
-        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        validation: validateInputsAndReturnResult(state.heading, state.description),
         tags: action.tags || state.tags,
       };
 
@@ -49,19 +47,18 @@ const noteFormReducer: FormReducer = (state, action) => {
     case 'SET_NOTE_CREATED':
       return {
         ...state,
-        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        validation: validateInputsAndReturnResult(state.heading, state.description),
         status: 'NOTE_CREATED',
         feedback: {
           message: 'Successfully created your new note!',
           isVisible: true,
         },
-        isNoteCreated: true,
       };
 
     case 'INPUT_INVALID_ON_SUBMIT':
       return {
         ...state,
-        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        validation: validateInputsAndReturnResult(state.heading, state.description),
         status: 'VALIDATION_ISSUE',
         feedback: {
           message: 'Form invalid',
@@ -72,15 +69,29 @@ const noteFormReducer: FormReducer = (state, action) => {
     case 'HIDE_FEEDBACK':
       return {
         ...state,
-        formIsValid: entireFormIsValid({ heading: state.heading, description: state.description }),
+        validation: validateInputsAndReturnResult(state.heading, state.description),
         feedback: noFeedback,
       };
 
     case 'CLEAR_FORM':
       return {
         ...initialState,
-        formIsValid: false,
         id: generateId(),
+      };
+
+    case 'RESET_EDIT_FORM':
+      return {
+        ...action.curNote!,
+        status: 'FORM_RESET',
+        validation: validateInputsAndReturnResult(
+          action!.curNote!.heading,
+          action!.curNote!.description
+        ),
+
+        feedback: {
+          message: 'Form reset successfully!',
+          isVisible: true,
+        },
       };
 
     default:
@@ -89,39 +100,37 @@ const noteFormReducer: FormReducer = (state, action) => {
 };
 
 const useNoteForm = (formType: FormType, noteId?: string) => {
-  const state = useSelector((state: NotesSlice) => state);
-  const allTags = state.allTags;
-  const curNote = state.notes.find(note => note.id === noteId);
+  const allNotes = useSelector((store: NotesSlice) => store.notes);
+  const allTags = useSelector((state: NotesSlice) => state.allTags);
+  const noteExists = allNotes.some(note => note.id === noteId);
+  const curNote = allNotes.find(note => note.id === noteId);
 
-  const initialState = useMemo(() => {
+  // No dependencies because it MUST run only once to set up the initial state of the useReducer
+  const initialFormState = useMemo(() => {
+    // This IF statement fixes the bug where on reload, the input fields are empty
+    // because the state has not been fetched from the local storage yet
+    // !! This is a temporary fix because it is not really good to use side effects in the useMemo() hook
+    if (!noteExists) {
+      const stateFromLocalStorage = localStorage.getItem('NOTES_INFO');
+      let parsedState: NotesSlice = initialReduxState;
+
+      if (stateFromLocalStorage) {
+        parsedState = JSON.parse(stateFromLocalStorage);
+      }
+
+      const curNote = parsedState.notes.find(note => note.id === noteId);
+
+      return convertNoteToFormState(curNote, formType, noteId);
+    }
+
     return convertNoteToFormState(curNote, formType, noteId);
   }, []);
 
-  const [form, dispatch] = useReducer(noteFormReducer, initialState);
+  const [form, dispatch] = useReducer(noteFormReducer, initialFormState);
   const dispatchNote = useDispatch();
-
-  const headingChangeHandler: InputChangeHandler = event => {
-    dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
-  };
-
-  const checkboxChangeHandler = () => {
-    dispatch({ type: 'CHANGE_IS_FEATURED' });
-  };
-
-  const descriptionChangeHandler: TextareaChangeHandler = event => {
-    dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
-  };
-
-  const tagsChangeHandler: TagsChangeHandler = tags => {
-    dispatch({ type: 'CHANGE_TAGS', tags });
-  };
 
   const setNoteStatusToCreated = () => {
     dispatch({ type: 'SET_NOTE_CREATED' });
-  };
-
-  const hideFeedback = () => {
-    dispatch({ type: 'HIDE_FEEDBACK' });
   };
 
   const clearForm = () => {
@@ -129,7 +138,7 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
   };
 
   const createNote = () => {
-    if (!form.formIsValid) {
+    if (!form.validation.entireFormIsValid) {
       dispatch({ type: 'INPUT_INVALID_ON_SUBMIT' });
 
       return;
@@ -141,25 +150,42 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
   };
 
   const editForm = () => {
-    if (!form.formIsValid) {
+    if (!form.validation.entireFormIsValid) {
       dispatch({ type: 'INPUT_INVALID_ON_SUBMIT' });
 
       return;
     }
+
+    dispatchNote<any>(writeStateToLocalStorageAfterNoteEdit(form));
   };
 
-  return {
-    form,
-    dispatchForm: dispatch,
-    headingChangeHandler,
-    checkboxChangeHandler,
-    descriptionChangeHandler,
-    tagsChangeHandler,
-    clearForm,
-    submitForm: formType === 'create' ? createNote : editForm,
-    allTags,
-    hideFeedback,
+  const resetEditForm = () => {
+    if (curNote) {
+      dispatch({ type: 'RESET_EDIT_FORM', curNote });
+
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
   };
+
+  const eventHandlers: FormEventHandlers = {
+    headingChange: event => dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value }),
+    checkboxChange: () => dispatch({ type: 'CHANGE_IS_FEATURED' }),
+
+    descriptionChange: event =>
+      dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value }),
+
+    tagsChange: tags => dispatch({ type: 'CHANGE_TAGS', tags }),
+    hideFeedback: () => dispatch({ type: 'HIDE_FEEDBACK' }),
+    resetForm: formType === 'create' ? clearForm : resetEditForm,
+    submitForm: formType === 'create' ? createNote : editForm,
+    setNoteStatusToCreated,
+  };
+
+  return { form, eventHandlers, allTags };
 };
 
 export default useNoteForm;

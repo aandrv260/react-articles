@@ -1,58 +1,76 @@
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import PageContainer from '../../components/PageContainer/PageContainer';
 import useQuery from '../../hooks/useQuery';
 import useNoteForm from '../../hooks/useNoteForm';
 import { HeaderInfo } from '../../models/header';
 import NoteForm from '../../components/NoteForm/NoteForm';
+import { getStatusColor } from '../../utils/Form/formValidation';
+import Feedback from '../../components/Feedback/Feedback';
+import { generateSlug } from '../../utils/urlSlugs';
+import { NoteFormButton } from '../../models/form';
+import { NotesSlice } from '../../models/store';
+import PageNotFound from '../PageNotFound/PageNotFound';
 
 const EditNotePage = () => {
   const navigate = useNavigate();
   const query = useQuery(['id']);
-  const {
-    form,
-    allTags,
-    checkboxChangeHandler,
-    clearForm,
-    descriptionChangeHandler,
-    dispatchForm,
-    headingChangeHandler,
-    hideFeedback,
-    submitForm,
-    tagsChangeHandler,
-  } = useNoteForm('edit', query?.id);
+  const notes = useSelector((state: NotesSlice) => state.notes);
+  const curNote = notes.find(note => note.id === query?.id);
+  const notePageSlug = `/note/${generateSlug(curNote?.heading || '')}?id=${curNote?.id}`;
+
+  const { form, allTags, eventHandlers } = useNoteForm('edit', query?.id);
+
+  if (!query?.id) return <PageNotFound />;
 
   const confirmEditHandler = () => {
-    // Dispatch a Redux Action Thunk to save the edits to the specific note
-    // and to save the changes to the local storage
+    eventHandlers.submitForm();
+    console.log(notePageSlug);
+    navigate(notePageSlug);
   };
 
   const headerInfo: HeaderInfo = {
-    heading: 'Edit {NOTE_TITLE}',
+    heading: `Edit ${curNote?.heading || ''}`,
     buttons: [
       {
         text: 'Confirm',
         designStyle: 'full',
-        onClick: () => {},
+        onClick: confirmEditHandler,
       },
 
       {
         text: 'Back',
         designStyle: 'full',
-        onClick: () => navigate('/'),
+        onClick: () => void navigate(notePageSlug),
       },
     ],
   };
+  console.log('resetForm', eventHandlers.resetForm);
+  const formButtons: NoteFormButton[] = [
+    { text: 'Confirm', designStyle: 'full', onClick: confirmEditHandler },
+    { text: 'Reset', designStyle: 'outline', onClick: eventHandlers.resetForm },
+  ];
 
   return (
-    <PageContainer header={headerInfo}>
-      <NoteForm
-        title={{ value: form.heading, onInputChange: headingChangeHandler }}
-        tagsInput={{ multiSelectValue: form.tags, onChange: tagsChangeHandler, options: allTags }}
-        checkbox={{ checked: !!form?.isFeatured, onChange: checkboxChangeHandler }}
-        description={{ value: form.description, onChange: descriptionChangeHandler }}
-        buttons={[{ text: 'Confirm', designStyle: 'full', onClick: confirmEditHandler }]}
+    <>
+      <Feedback
+        status={getStatusColor(form.status)}
+        buttons={[]}
+        message={form.feedback.message}
+        isVisible={form.feedback.isVisible}
+        onClose={eventHandlers.hideFeedback}
       />
-    </PageContainer>
+
+      <PageContainer header={headerInfo}>
+        <NoteForm
+          form={form}
+          buttons={formButtons}
+          eventHandlers={eventHandlers}
+          allTags={allTags}
+        />
+      </PageContainer>
+    </>
   );
 };
 

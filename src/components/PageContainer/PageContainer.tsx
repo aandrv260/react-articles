@@ -5,6 +5,7 @@ import Header from '../Header/Header';
 interface PageContainerProps {
   header?: HeaderInfo;
   children?: React.ReactNode;
+  className?: string;
 }
 
 /** 
@@ -14,13 +15,13 @@ interface PageContainerProps {
 
 */
 const PageContainer = (props: PageContainerProps) => {
-  const { header, children } = props;
+  const { header, children, className } = props;
 
   return (
     <>
       {header && <Header heading={header.heading} buttons={header?.buttons} tags={header.tags} />}
 
-      <main>{children}</main>
+      <main className={className}>{children}</main>
     </>
   );
 };

@@ -7,7 +7,11 @@ export const noFeedback = { message: '', isVisible: false };
 export const initialState: NoteFormState = {
   heading: '',
   isFeatured: false,
-  formIsValid: false,
+  validation: {
+    entireFormIsValid: false,
+    descriptionIsValid: false,
+    headingIsValid: false,
+  },
   status: 'FORM_EMPTY',
   feedback: noFeedback,
   description: '',
@@ -33,6 +37,20 @@ export const convertNoteToFormState = (
     ...note,
     status: 'IN_EDIT',
     feedback: noFeedback,
-    formIsValid: true,
+    validation: {
+      entireFormIsValid: true,
+      headingIsValid: true,
+      descriptionIsValid: true,
+    },
+  };
+};
+
+export const formStateToNote = (noteForm: NoteFormState): Note => {
+  return {
+    heading: noteForm.heading,
+    description: noteForm.description,
+    id: noteForm.id,
+    tags: noteForm.tags,
+    isFeatured: noteForm.isFeatured,
   };
 };
