@@ -1,0 +1,196 @@
+.note-page {
+  padding-top: 1rem;
+
+  div div:not(:last-child) {
+    margin-bottom: 2.4rem;
+  }
+
+  // HEADINGS
+  h1 {
+    font-size: 3.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #4f4fec48;
+
+    &:not(:last-child) {
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    &:not(:last-child) {
+      margin-bottom: 0.4rem;
+    }
+  }
+
+  h2 {
+    font-size: 2.4rem;
+  }
+
+  h3 {
+    font-size: 2.1rem;
+  }
+
+  h4 {
+    font-size: 2rem;
+  }
+
+  h5 {
+    font-size: 1.8rem;
+  }
+
+  h6 {
+    font-size: 1.6rem;
+  }
+
+  // TEXT
+  p,
+  span,
+  ol li,
+  ul li {
+    font-size: 1.6rem;
+    letter-spacing: 0.4px;
+  }
+
+  p {
+    line-height: 1.6;
+
+    code {
+      color: #000;
+      padding: 3px;
+      border-radius: 3px;
+      background-color: #ccc;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  // HORIZONTAL LINE
+  hr {
+    margin: 2rem 0;
+    // border-width: 1px;
+    border: none;
+    border-top: 1px solid #4f4fec48;
+  }
+
+  // BLOCKQUOTE
+  blockquote {
+    border-left: 3px solid #aaa;
+    padding-left: 0.7rem;
+
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+
+    p {
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  // LINK
+  a {
+    border-bottom: 1px solid currentColor;
+    color: var(--color-main);
+    text-decoration: none;
+  }
+
+  // CODE
+  pre {
+    padding: 1.2rem 1.4rem;
+    background-color: #eef;
+
+    &:not(:last-child) {
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  code {
+    font-size: 1.5rem;
+    color: #000;
+    max-width: 100%;
+  }
+
+  // LISTS
+  ul,
+  ol {
+    li {
+      margin-left: 2.4rem;
+
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        &:not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  // IMAGE
+  img {
+    width: 60%;
+
+    &:not(:last-child) {
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  // Table
+  table {
+    width: 50%;
+    text-align: left;
+    border-collapse: collapse;
+
+    &:not(:last-child) {
+      margin-bottom: 2.4rem;
+    }
+
+    &,
+    thead,
+    tbody,
+    td,
+    tr {
+      border: 1px solid #000;
+    }
+
+    thead {
+      th {
+        &:not(:last-child) {
+          border-right: 1px solid #000;
+        }
+      }
+
+      & > tr:first-child {
+        border: 1px solid #000;
+      }
+
+      td,
+      tr {
+        border-top: 1px solid transparent;
+      }
+    }
+
+    td,
+    tr,
+    th {
+      padding: 3px 5px;
+    }
+  }
+}

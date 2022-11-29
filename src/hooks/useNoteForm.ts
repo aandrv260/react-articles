@@ -11,6 +11,7 @@ import {
 } from '../models/form';
 import { Note } from '../models/notes';
 import { NotesSlice } from '../models/store';
+import { initialReduxState } from '../store';
 import {
   writeStateToLocalStorage,
   writeStateToLocalStorageAfterNoteEdit,
@@ -111,14 +112,19 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
   const noteExists = allNotes.some(note => note.id === noteId);
   const curNote = allNotes.find(note => note.id === noteId);
 
-  const initialState = useMemo(() => {
+  const initialFormState = useMemo(() => {
     // This IF statement fixes the bug where on reload, the input fields are empty
     // because the state has not been fetched from the local storage yet
     // !! This is a temporary fix because it is not really good to use side effects in the useMemo() hook
     if (!noteExists) {
-      const stateFromLocalStorage: NotesSlice =
-        JSON.parse(localStorage.getItem('NOTES_INFO') || '') || initialState;
-      const curNote = stateFromLocalStorage.notes.find(note => note.id === noteId);
+      const stateFromLocalStorage = localStorage.getItem('NOTES_INFO');
+      let parsedState: NotesSlice = initialReduxState;
+
+      if (stateFromLocalStorage) {
+        parsedState = JSON.parse(stateFromLocalStorage);
+      }
+
+      const curNote = parsedState.notes.find(note => note.id === noteId);
 
       return convertNoteToFormState(curNote, formType, noteId);
     }
@@ -126,7 +132,7 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
     return convertNoteToFormState(curNote, formType, noteId);
   }, []);
 
-  const [form, dispatch] = useReducer(noteFormReducer, initialState);
+  const [form, dispatch] = useReducer(noteFormReducer, initialFormState);
   const dispatchNote = useDispatch();
 
   const headingChangeHandler: InputChangeHandler = event => {
@@ -177,7 +183,6 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
     }
 
     dispatchNote<any>(writeStateToLocalStorageAfterNoteEdit(form));
-    navigate('/');
   };
 
   // DO THIS AFTER YOU FIX THE RELOAD BUG

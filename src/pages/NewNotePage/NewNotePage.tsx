@@ -39,13 +39,15 @@ const NewNotePage = () => {
       buttons: [
         {
           text: 'Add',
-          onClick: createNote,
+          onClick: () => {
+            createNote();
+          },
         },
 
         {
           text: 'Back',
           designStyle: 'outline',
-          onClick: (event: ButtonClickMouseEvent) => navigate('/'),
+          onClick: () => navigate('/'),
         },
       ],
     }),

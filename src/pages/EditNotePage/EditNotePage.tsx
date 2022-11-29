@@ -11,6 +11,7 @@ import Feedback from '../../components/Feedback/Feedback';
 import { generateSlug } from '../../utils/urlSlugs';
 import { NoteFormState } from '../../models/form';
 import { NotesSlice } from '../../models/store';
+import PageNotFound from '../PageNotFound/PageNotFound';
 
 const EditNotePage = () => {
   const navigate = useNavigate();
@@ -32,19 +33,27 @@ const EditNotePage = () => {
     tagsChangeHandler,
   } = useNoteForm('edit', query?.id);
 
+  if (!query?.id) return <PageNotFound />;
+
+  const confirmEditHandler = () => {
+    editForm();
+    console.log(notePageSlug);
+    navigate(notePageSlug);
+  };
+
   const headerInfo: HeaderInfo = {
     heading: `Edit ${curNote?.heading || ''}`,
     buttons: [
       {
         text: 'Confirm',
         designStyle: 'full',
-        onClick: editForm,
+        onClick: confirmEditHandler,
       },
 
       {
         text: 'Back',
         designStyle: 'full',
-        onClick: () => navigate(notePageSlug),
+        onClick: () => void navigate(notePageSlug),
       },
     ],
   };
@@ -66,7 +75,7 @@ const EditNotePage = () => {
           checkbox={{ checked: !!form?.isFeatured, onChange: checkboxChangeHandler }}
           description={{ value: form.description, onChange: descriptionChangeHandler }}
           buttons={[
-            { text: 'Confirm', designStyle: 'full', onClick: editForm },
+            { text: 'Confirm', designStyle: 'full', onClick: confirmEditHandler },
             { text: 'Reset', designStyle: 'outline', onClick: resetEditForm },
           ]}
         />

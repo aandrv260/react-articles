@@ -36,3 +36,13 @@ export const convertNoteToFormState = (
     formIsValid: true,
   };
 };
+
+export const formStateToNote = (noteForm: NoteFormState): Note => {
+  return {
+    heading: noteForm.heading,
+    description: noteForm.description,
+    id: noteForm.id,
+    tags: noteForm.tags,
+    isFeatured: noteForm.isFeatured,
+  };
+};

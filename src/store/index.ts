@@ -1,8 +1,9 @@
-import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, configureStore, PayloadAction, current } from '@reduxjs/toolkit';
 import { NoteFormState } from '../models/form';
 import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice, EditTag } from '../models/store';
+import { formStateToNote } from '../utils/Form/form';
 import { filterNotes } from './notesFiltersUtils';
 
 type Filter = string | NoteTagInfo[];
@@ -34,12 +35,28 @@ export const notesSlice = createSlice({
     editNote(curState, action: PayloadAction<NoteFormState>) {
       // TODO: Refactor the findIndex functionality that repeats
       const editedNote = action.payload;
+      const { heading, description, isFeatured, tags } = editedNote;
       const indexOfNote = curState.notes.findIndex(note => note.id === editedNote.id);
 
-      curState.notes[indexOfNote].heading = editedNote.heading;
-      curState.notes[indexOfNote].description = editedNote.description;
-      curState.notes[indexOfNote].isFeatured = editedNote.isFeatured;
-      curState.notes[indexOfNote].tags = editedNote.tags;
+      console.log('current(curState)', current(curState));
+
+      // Edit note's values
+      Object.assign(curState.notes[indexOfNote], { heading, description, isFeatured, tags });
+
+      // Makes the unique tags be pushed into the allTags array
+      const newNoteTagsIds = editedNote.tags.map(tag => tag.value);
+      const allTagIds = curState.allTags.map(tag => tag.value);
+
+      newNoteTagsIds.forEach(editedNoteTag => {
+        if (!allTagIds.includes(editedNoteTag)) {
+          const indexOfTagObject = editedNote.tags.findIndex(tag => tag.value === editedNoteTag);
+
+          if (indexOfTagObject) {
+            console.log();
+            curState.allTags.push(editedNote.tags[indexOfTagObject]);
+          }
+        }
+      });
 
       curState.filteredNotes = curState.notes;
     },
@@ -110,9 +127,11 @@ export const notesSlice = createSlice({
       curState.filteredNotes = filterNotes(curState);
     },
 
-    create(curState, action: PayloadAction<Note>) {
-      const newNote = action.payload;
-      console.log('newNote === action.payload', newNote === action.payload);
+    create(curState, action: PayloadAction<NoteFormState>) {
+      // const newNoteForm = action.payload;
+      // console.log('newNote === action.payload', newNote === action.payload);
+
+      const newNote: Note = formStateToNote(action.payload);
 
       curState.notes.push(newNote);
 

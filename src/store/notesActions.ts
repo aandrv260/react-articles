@@ -22,7 +22,7 @@ export const getDataFromLocalStorage = (): ThunkAction<void, NotesSlice, unknown
 };
 
 export const writeStateToLocalStorage = (
-  newNote: Note
+  newNote: NoteFormState
 ): ThunkAction<void, NotesSlice, unknown, AnyAction> => {
   return (dispatch, getState) => {
     dispatch(notesActions.create(newNote));
