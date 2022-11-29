@@ -1,46 +1,42 @@
-import { InputChangeHandler, TextareaChangeHandler } from '../../models/form';
-import { ButtonStyles } from '../../models/header';
+import { FormEventHandlers, NoteFormButton, NoteFormState } from '../../models/form';
 import { NoteTagInfo } from '../../models/noteTags';
-import Button, { ButtonClickHandler } from '../Button/Button';
+import Button from '../Button/Button';
 import ButtonGroup from '../ButtonGroup/ButtonGroup';
 import Checkbox from '../Checkbox/Checkbox';
 import Form from '../Form/Form';
 import FormGroup from '../FormGroup/FormGroup';
 import InputBox from '../InputBox/InputBox';
 
-interface NoteFormButton {
-  text: string;
-  designStyle?: ButtonStyles;
-  onClick: ButtonClickHandler;
-}
-
 interface NoteFormProps {
-  title: {
-    value: string;
-    onInputChange: InputChangeHandler;
-  };
+  form: NoteFormState;
+  eventHandlers: FormEventHandlers;
+  // title: {
+  //   value: string;
+  //   onInputChange: InputChangeHandler;
+  // };
 
-  tagsInput: {
-    options: NoteTagInfo[];
-    multiSelectValue: NoteTagInfo[];
-    onChange: (data: NoteTagInfo[]) => void;
-  };
+  // tagsInput: {
+  //   options: NoteTagInfo[];
+  //   multiSelectValue: NoteTagInfo[];
+  //   onChange: (data: NoteTagInfo[]) => void;
+  // };
 
-  checkbox: {
-    checked: boolean;
-    onChange: InputChangeHandler;
-  };
+  // checkbox: {
+  //   checked: boolean;
+  //   onChange: InputChangeHandler;
+  // };
 
-  description: {
-    value: string;
-    onChange: TextareaChangeHandler;
-  };
+  // description: {
+  //   value: string;
+  //   onChange: TextareaChangeHandler;
+  // };
 
   buttons: NoteFormButton[];
+  allTags: NoteTagInfo[];
 }
 
 const NoteForm = (props: NoteFormProps) => {
-  const { title, tagsInput, checkbox, description, buttons } = props;
+  const { form, eventHandlers, buttons, allTags } = props;
 
   return (
     <>
@@ -50,29 +46,33 @@ const NoteForm = (props: NoteFormProps) => {
             id="note-title"
             type={'text'}
             label="Title"
-            value={title.value}
-            onInputChange={title.onInputChange}
+            value={form.heading}
+            onInputChange={eventHandlers.headingChange}
             tooltip={{ text: 'My tooltip', color: '#333' }}
           />
 
           <InputBox
             id="note-tags"
             label="Tags"
-            options={tagsInput.options}
-            multiSelectValue={tagsInput.multiSelectValue}
-            onMultiSelectChange={tagsInput.onChange}
+            options={allTags}
+            multiSelectValue={form.tags}
+            onMultiSelectChange={eventHandlers.tagsChange}
             inputElementType="multi-select"
           />
         </FormGroup>
 
-        <Checkbox checked={!!checkbox.checked} onChange={checkbox.onChange} label="Featured" />
+        <Checkbox
+          checked={!!form.isFeatured}
+          onChange={eventHandlers.checkboxChange}
+          label="Featured"
+        />
 
         <InputBox
           id="note-description"
           type={'text'}
           label="Description"
-          value={description.value}
-          onTextareaChange={description.onChange}
+          value={form.description}
+          onTextareaChange={eventHandlers.descriptionChange}
           inputElementType="textarea"
           tooltip={{ text: 'My tooltip', color: '#333' }}
         />

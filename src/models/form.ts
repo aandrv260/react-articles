@@ -1,4 +1,6 @@
 import React from 'react';
+import { ButtonClickHandler } from '../components/Button/Button';
+import { ButtonStyles } from './header';
 import { Note } from './notes';
 import { NoteTagInfo } from './noteTags';
 
@@ -40,6 +42,12 @@ export interface NoteFormState extends Note {
   formIsValid: boolean;
 }
 
+export interface NoteFormButton {
+  text: string;
+  designStyle?: ButtonStyles;
+  onClick: ButtonClickHandler;
+}
+
 export type FormReducer = (state: NoteFormState, action: NewNoteAction) => NoteFormState;
 
 export type ButtonClickMouseEvent = React.MouseEvent<HTMLButtonElement>;
@@ -54,5 +62,16 @@ export type FormInputChangeHandler = (
   event: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
 ) => void;
 export type TagsChangeHandler = (tags: NoteTagInfo[]) => void;
+
+export interface FormEventHandlers {
+  headingChange: InputChangeHandler;
+  tagsChange: (data: NoteTagInfo[]) => void;
+  checkboxChange: InputChangeHandler;
+  descriptionChange: TextareaChangeHandler;
+  hideFeedback: () => void;
+  resetForm: () => void;
+  submitForm: () => void;
+  setNoteStatusToCreated: () => void;
+}
 
 export type FormType = 'create' | 'edit';

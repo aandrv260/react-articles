@@ -1,15 +1,7 @@
 import { useReducer, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
-import {
-  FormReducer,
-  FormType,
-  InputChangeHandler,
-  TagsChangeHandler,
-  TextareaChangeHandler,
-} from '../models/form';
-import { Note } from '../models/notes';
+import { FormEventHandlers, FormReducer, FormType } from '../models/form';
 import { NotesSlice } from '../models/store';
 import { initialReduxState } from '../store';
 import {
@@ -106,7 +98,6 @@ const noteFormReducer: FormReducer = (state, action) => {
 };
 
 const useNoteForm = (formType: FormType, noteId?: string) => {
-  const navigate = useNavigate();
   const allNotes = useSelector((store: NotesSlice) => store.notes);
   const allTags = useSelector((state: NotesSlice) => state.allTags);
   const noteExists = allNotes.some(note => note.id === noteId);
@@ -135,29 +126,29 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
   const [form, dispatch] = useReducer(noteFormReducer, initialFormState);
   const dispatchNote = useDispatch();
 
-  const headingChangeHandler: InputChangeHandler = event => {
-    dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
-  };
+  // const headingChangeHandler: InputChangeHandler = event => {
+  //   dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value });
+  // };
 
-  const checkboxChangeHandler = () => {
-    dispatch({ type: 'CHANGE_IS_FEATURED' });
-  };
+  // const checkboxChangeHandler = () => {
+  //   dispatch({ type: 'CHANGE_IS_FEATURED' });
+  // };
 
-  const descriptionChangeHandler: TextareaChangeHandler = event => {
-    dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
-  };
+  // const descriptionChangeHandler: TextareaChangeHandler = event => {
+  //   dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value });
+  // };
 
-  const tagsChangeHandler: TagsChangeHandler = tags => {
-    dispatch({ type: 'CHANGE_TAGS', tags });
-  };
+  // const tagsChangeHandler: TagsChangeHandler = tags => {
+  //   dispatch({ type: 'CHANGE_TAGS', tags });
+  // };
 
   const setNoteStatusToCreated = () => {
     dispatch({ type: 'SET_NOTE_CREATED' });
   };
 
-  const hideFeedback = () => {
-    dispatch({ type: 'HIDE_FEEDBACK' });
-  };
+  // const hideFeedback = () => {
+  //   dispatch({ type: 'HIDE_FEEDBACK' });
+  // };
 
   const clearForm = () => {
     dispatch({ type: 'CLEAR_FORM' });
@@ -189,6 +180,7 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
   const resetEditForm = () => {
     if (curNote) {
       dispatch({ type: 'RESET_EDIT_FORM', curNote });
+
       window.scrollTo({
         top: 0,
         left: 0,
@@ -197,19 +189,21 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
     }
   };
 
-  return {
-    form,
-    dispatchForm: dispatch,
-    headingChangeHandler,
-    checkboxChangeHandler,
-    descriptionChangeHandler,
-    tagsChangeHandler,
-    resetEditForm,
-    clearForm,
+  const eventHandlers: FormEventHandlers = {
+    headingChange: event => dispatch({ type: 'CHANGE_HEADING', value: event.currentTarget.value }),
+    checkboxChange: () => dispatch({ type: 'CHANGE_IS_FEATURED' }),
+
+    descriptionChange: event =>
+      dispatch({ type: 'CHANGE_DESCRIPTION', value: event.currentTarget.value }),
+
+    tagsChange: tags => dispatch({ type: 'CHANGE_TAGS', tags }),
+    hideFeedback: () => dispatch({ type: 'HIDE_FEEDBACK' }),
+    resetForm: formType === 'create' ? clearForm : resetEditForm,
     submitForm: formType === 'create' ? createNote : editForm,
-    allTags,
-    hideFeedback,
+    setNoteStatusToCreated,
   };
+
+  return { form, eventHandlers, dispatchForm: dispatch, allTags };
 };
 
 export default useNoteForm;

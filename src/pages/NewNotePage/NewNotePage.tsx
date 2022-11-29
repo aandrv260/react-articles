@@ -1,36 +1,18 @@
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
 
 import PageContainer from '../../components/PageContainer/PageContainer';
-import Form from '../../components/Form/Form';
-import InputBox from '../../components/InputBox/InputBox';
-import FormGroup from '../../components/FormGroup/FormGroup';
-import Checkbox from '../../components/Checkbox/Checkbox';
-import Button from '../../components/Button/Button';
 
-import { ButtonClickMouseEvent } from '../../models/form';
-import { HeaderInfo } from '../../models/header';
-import ButtonGroup from '../../components/ButtonGroup/ButtonGroup';
 import Feedback from '../../components/Feedback/Feedback';
-// import { writeStateToLocalStorage } from '../../store/notesActions';
-import { getStatusColor } from '../../utils/Form/formValidation';
 import NoteForm from '../../components/NoteForm/NoteForm';
+
+import { HeaderInfo } from '../../models/header';
+import { getStatusColor } from '../../utils/Form/formValidation';
 import useNoteForm from '../../hooks/useNoteForm';
+import { NoteFormButton } from '../../models/form';
 
 const NewNotePage = () => {
-  const {
-    form: newNoteForm,
-    headingChangeHandler,
-    tagsChangeHandler,
-    checkboxChangeHandler,
-    clearForm,
-    submitForm: createNote,
-    descriptionChangeHandler,
-    allTags,
-    hideFeedback,
-  } = useNoteForm('create');
-
+  const { form: newNoteForm, eventHandlers, allTags } = useNoteForm('create');
   const navigate = useNavigate();
 
   const headerInfo: HeaderInfo = useMemo(
@@ -40,7 +22,7 @@ const NewNotePage = () => {
         {
           text: 'Add',
           onClick: () => {
-            createNote();
+            eventHandlers.submitForm();
           },
         },
 
@@ -51,8 +33,13 @@ const NewNotePage = () => {
         },
       ],
     }),
-    [navigate, createNote]
+    [navigate, eventHandlers]
   );
+
+  const formButtons: NoteFormButton[] = [
+    { text: 'Create', onClick: eventHandlers.submitForm },
+    { text: 'Clear', onClick: eventHandlers.resetForm, designStyle: 'outline' },
+  ];
 
   return (
     <>
@@ -61,11 +48,17 @@ const NewNotePage = () => {
         buttons={[]}
         message={newNoteForm.feedback.message}
         isVisible={newNoteForm.feedback.isVisible}
-        onClose={hideFeedback}
+        onClose={eventHandlers.hideFeedback}
       />
 
       <PageContainer header={headerInfo}>
         <NoteForm
+          form={newNoteForm}
+          buttons={formButtons}
+          eventHandlers={eventHandlers}
+          allTags={allTags}
+        />
+        {/* <NoteForm
           title={{ value: newNoteForm.heading, onInputChange: headingChangeHandler }}
           tagsInput={{
             multiSelectValue: newNoteForm.tags,
@@ -78,7 +71,7 @@ const NewNotePage = () => {
             { text: 'Create', onClick: createNote },
             { text: 'Clear', onClick: clearForm, designStyle: 'outline' },
           ]}
-        />
+        /> */}
       </PageContainer>
     </>
   );
