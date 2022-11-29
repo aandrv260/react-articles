@@ -58,20 +58,6 @@ const NewNotePage = () => {
           eventHandlers={eventHandlers}
           allTags={allTags}
         />
-        {/* <NoteForm
-          title={{ value: newNoteForm.heading, onInputChange: headingChangeHandler }}
-          tagsInput={{
-            multiSelectValue: newNoteForm.tags,
-            onChange: tagsChangeHandler,
-            options: allTags,
-          }}
-          checkbox={{ checked: !!newNoteForm?.isFeatured, onChange: checkboxChangeHandler }}
-          description={{ value: newNoteForm.description, onChange: descriptionChangeHandler }}
-          buttons={[
-            { text: 'Create', onClick: createNote },
-            { text: 'Clear', onClick: clearForm, designStyle: 'outline' },
-          ]}
-        /> */}
       </PageContainer>
     </>
   );

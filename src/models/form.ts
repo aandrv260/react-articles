@@ -23,7 +23,6 @@ export type FormStatus =
   | 'FORM_RESET';
 
 export type FeedbackStatus = 'success' | 'failure' | 'warning';
-
 export interface NewNoteAction {
   type: ActionType;
   value?: string;
@@ -36,10 +35,17 @@ interface NoteFormFeedback {
   isVisible: boolean;
 }
 
+export interface FormValidation {
+  entireFormIsValid: boolean;
+  headingIsValid: boolean;
+  descriptionIsValid: boolean;
+}
+
 export interface NoteFormState extends Note {
   feedback: NoteFormFeedback;
   status: FormStatus;
-  formIsValid: boolean;
+  validation: FormValidation;
+  // formIsValid: boolean;
 }
 
 export interface NoteFormButton {

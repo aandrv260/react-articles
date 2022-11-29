@@ -20,7 +20,7 @@ const EditNotePage = () => {
   const curNote = notes.find(note => note.id === query?.id);
   const notePageSlug = `/note/${generateSlug(curNote?.heading || '')}?id=${curNote?.id}`;
 
-  const { form, allTags, dispatchForm, eventHandlers } = useNoteForm('edit', query?.id);
+  const { form, allTags, eventHandlers } = useNoteForm('edit', query?.id);
 
   if (!query?.id) return <PageNotFound />;
 
@@ -69,16 +69,6 @@ const EditNotePage = () => {
           eventHandlers={eventHandlers}
           allTags={allTags}
         />
-        {/* <NoteForm
-          title={{ value: form.heading, onInputChange: headingChangeHandler }}
-          tagsInput={{ multiSelectValue: form.tags, onChange: tagsChangeHandler, options: allTags }}
-          checkbox={{ checked: !!form?.isFeatured, onChange: checkboxChangeHandler }}
-          description={{ value: form.description, onChange: descriptionChangeHandler }}
-          buttons={[
-            { text: 'Confirm', designStyle: 'full', onClick: confirmEditHandler },
-            { text: 'Reset', designStyle: 'outline', onClick: resetEditForm },
-          ]}
-        /> */}
       </PageContainer>
     </>
   );

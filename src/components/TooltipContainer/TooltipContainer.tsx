@@ -22,11 +22,7 @@ const TooltipContainer = ({ children, color, text }: TooltipContainerProps) => {
   }, [color]);
 
   return (
-    <div
-      className={`tooltip-container ${styles['tooltip']}`}
-      style={{ position: 'relative' }}
-      data-tooltip={text}
-    >
+    <div className={`tooltip-container ${styles['tooltip']}`} data-tooltip={text}>
       {children}
     </div>
   );

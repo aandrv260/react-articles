@@ -10,27 +10,6 @@ import InputBox from '../InputBox/InputBox';
 interface NoteFormProps {
   form: NoteFormState;
   eventHandlers: FormEventHandlers;
-  // title: {
-  //   value: string;
-  //   onInputChange: InputChangeHandler;
-  // };
-
-  // tagsInput: {
-  //   options: NoteTagInfo[];
-  //   multiSelectValue: NoteTagInfo[];
-  //   onChange: (data: NoteTagInfo[]) => void;
-  // };
-
-  // checkbox: {
-  //   checked: boolean;
-  //   onChange: InputChangeHandler;
-  // };
-
-  // description: {
-  //   value: string;
-  //   onChange: TextareaChangeHandler;
-  // };
-
   buttons: NoteFormButton[];
   allTags: NoteTagInfo[];
 }
@@ -38,17 +17,21 @@ interface NoteFormProps {
 const NoteForm = (props: NoteFormProps) => {
   const { form, eventHandlers, buttons, allTags } = props;
 
+  console.log('validation', form.validation);
+
   return (
     <>
       <Form hasGroups>
         <FormGroup>
           <InputBox
             id="note-title"
+            inputElementType="input"
             type={'text'}
             label="Title"
             value={form.heading}
             onInputChange={eventHandlers.headingChange}
             tooltip={{ text: 'My tooltip', color: '#333' }}
+            isValid={form.validation.headingIsValid}
           />
 
           <InputBox
@@ -75,6 +58,7 @@ const NoteForm = (props: NoteFormProps) => {
           onTextareaChange={eventHandlers.descriptionChange}
           inputElementType="textarea"
           tooltip={{ text: 'My tooltip', color: '#333' }}
+          isValid={form.validation.descriptionIsValid}
         />
       </Form>
 
@@ -95,37 +79,3 @@ const NoteForm = (props: NoteFormProps) => {
 };
 
 export default NoteForm;
-
-/* <FormGroup>
-        <InputBox
-          id="note-title"
-          type={'text'}
-          label="Title"
-          value={newNoteForm.heading}
-          onInputChange={headingChangeHandler}
-        />
-
-        <InputBox
-          id="note-tags"
-          label="Tags"
-          options={allTags}
-          multiSelectValue={newNoteForm.tags}
-          onMultiSelectChange={tagsChangeHandler}
-          inputElementType="multi-select"
-        />
-      </FormGroup>
-
-      <Checkbox
-        checked={!!newNoteForm.isFeatured}
-        onChange={checkboxChangeHandler}
-        label="Featured"
-      />
-
-      <InputBox
-        id="note-description"
-        type={'text'}
-        label="Description"
-        value={newNoteForm.description}
-        onTextareaChange={descriptionChangeHandler}
-        inputElementType="textarea"
-      /> */

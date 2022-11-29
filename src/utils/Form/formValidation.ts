@@ -1,4 +1,4 @@
-import { FeedbackStatus, FormStatus, NoteFormState } from '../../models/form';
+import { FeedbackStatus, FormStatus, FormValidation, NoteFormState } from '../../models/form';
 import { noFeedback } from './form';
 
 type TextInputValidator = (textInput: string | undefined) => boolean;
@@ -35,11 +35,11 @@ export const getStatusColor: StatusColor = formStatus => {
   }
 };
 
-const isFormHeadingValid: TextInputValidator = heading => {
+export const isFormHeadingValid: TextInputValidator = heading => {
   return heading !== undefined && heading.length > 5;
 };
 
-const isFormDescriptionValid: TextInputValidator = description => {
+export const isFormDescriptionValid: TextInputValidator = description => {
   return description !== undefined && description.length > 20;
 };
 
@@ -47,19 +47,47 @@ export const entireFormIsValid: FullFormValidation = ({ heading, description }) 
   return isFormHeadingValid(heading) && isFormDescriptionValid(description);
 };
 
+export const validateInputsAndReturnResult = (
+  heading: string,
+  description: string
+): FormValidation => {
+  const headingIsValid = isFormHeadingValid(heading);
+  const descriptionIsValid = isFormDescriptionValid(description);
+
+  return {
+    headingIsValid,
+    descriptionIsValid,
+    entireFormIsValid: headingIsValid && descriptionIsValid,
+  };
+};
+
 export const validateTextInput: InputValidator = (state, inputData, feedbackMessage) => {
   const isInputHeading = inputData.type === 'heading';
+  const headingIsValid = isInputHeading
+    ? isFormHeadingValid(inputData.value)
+    : state.validation.headingIsValid;
+  const descriptionIsValid = !isInputHeading
+    ? isFormDescriptionValid(inputData.value)
+    : state.validation.descriptionIsValid;
   const isInputValid = isInputHeading ? isFormHeadingValid : isFormDescriptionValid;
 
   if (!isInputValid(inputData.value)) {
     return {
       ...state,
       status: 'VALIDATION_ISSUE',
-      formIsValid: false,
       feedback: {
         message: feedbackMessage,
         isVisible: true,
       },
+
+      // TODO: Refactor this using the function above called validateInputsAndReturnResult
+      validation: {
+        headingIsValid,
+        descriptionIsValid,
+        entireFormIsValid: headingIsValid && descriptionIsValid,
+      },
+
+      // Insert the type (description or heading) as part of the new state
       [inputData.type]: inputData.value as string,
     };
   }
@@ -69,10 +97,11 @@ export const validateTextInput: InputValidator = (state, inputData, feedbackMess
   return {
     ...state,
     status: 'IN_EDIT',
-    formIsValid: entireFormIsValid({
-      heading: isInputHeading ? finalValue : state.heading,
-      description: !isInputHeading ? finalValue : state.description,
-    }),
+    validation: {
+      headingIsValid,
+      descriptionIsValid,
+      entireFormIsValid: headingIsValid && descriptionIsValid,
+    },
     feedback: noFeedback,
     [inputData.type]: finalValue,
   };
