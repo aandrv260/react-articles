@@ -2,7 +2,13 @@ import { InputChangeHandler, TextareaChangeHandler } from '../../models/form';
 import Select from 'react-select/creatable';
 import styles from './InputBox.module.scss';
 import { NoteTagInfo } from '../../models/noteTags';
+import TooltipContainer from '../TooltipContainer/TooltipContainer';
+import { useCallback } from 'react';
 
+interface TooltipOptions {
+  color: string;
+  text: string;
+}
 interface InputBoxProps {
   id: string;
   label: string;
@@ -15,6 +21,7 @@ interface InputBoxProps {
   onTextareaChange?: TextareaChangeHandler;
   onMultiSelectChange?: (data: NoteTagInfo[]) => void;
   inputElementType?: 'input' | 'textarea' | 'multi-select';
+  tooltip?: TooltipOptions;
 }
 
 const InputBox: React.FC<InputBoxProps> = props => {
@@ -30,6 +37,7 @@ const InputBox: React.FC<InputBoxProps> = props => {
     inputElementType,
     multiSelectValue,
     onMultiSelectChange,
+    tooltip,
   } = props;
 
   return (
@@ -71,17 +79,48 @@ const InputBox: React.FC<InputBoxProps> = props => {
       )}
 
       {inputElementType === 'textarea' && (
-        <textarea placeholder={placeholder} id={id} value={value} onChange={onTextareaChange} />
+        <>
+          {tooltip && (
+            <TooltipContainer color="#333" text="My first tooltip">
+              <textarea
+                placeholder={placeholder}
+                id={id}
+                value={value}
+                onChange={onTextareaChange}
+              />
+            </TooltipContainer>
+          )}
+
+          {!tooltip && (
+            <textarea placeholder={placeholder} id={id} value={value} onChange={onTextareaChange} />
+          )}
+        </>
       )}
 
       {(inputElementType === 'input' || !inputElementType) && (
-        <input
-          type={type}
-          id={id}
-          placeholder={placeholder}
-          value={value}
-          onChange={onInputChange}
-        />
+        <>
+          {tooltip && (
+            <TooltipContainer color="#333" text="My first tooltip">
+              <input
+                type={type}
+                id={id}
+                placeholder={placeholder}
+                value={value}
+                onChange={onInputChange}
+              />
+            </TooltipContainer>
+          )}
+
+          {!tooltip && (
+            <input
+              type={type}
+              id={id}
+              placeholder={placeholder}
+              value={value}
+              onChange={onInputChange}
+            />
+          )}
+        </>
       )}
     </div>
   );

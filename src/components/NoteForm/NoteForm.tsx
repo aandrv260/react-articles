@@ -52,6 +52,7 @@ const NoteForm = (props: NoteFormProps) => {
             label="Title"
             value={title.value}
             onInputChange={title.onInputChange}
+            tooltip={{ text: 'My tooltip', color: '#333' }}
           />
 
           <InputBox
@@ -73,6 +74,7 @@ const NoteForm = (props: NoteFormProps) => {
           value={description.value}
           onTextareaChange={description.onChange}
           inputElementType="textarea"
+          tooltip={{ text: 'My tooltip', color: '#333' }}
         />
       </Form>
 

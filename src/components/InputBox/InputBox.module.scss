@@ -1,6 +1,10 @@
 .input-box {
   flex: 1;
 
+  // & > div:last-child {
+  //   flex: 1;
+  // }
+
   input,
   textarea {
     padding: 0.2rem 0.8rem;
