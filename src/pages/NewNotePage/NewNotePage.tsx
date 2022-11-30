@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import PageContainer from '../../components/PageContainer/PageContainer';
@@ -46,7 +46,7 @@ const NewNotePage = () => {
       <Feedback
         status={getStatusColor(newNoteForm.status)}
         buttons={[]}
-        message={newNoteForm.feedback.message}
+        message={newNoteForm.feedback.submitMessage}
         isVisible={newNoteForm.feedback.isVisible}
         onClose={eventHandlers.hideFeedback}
       />

@@ -14,17 +14,24 @@ const TooltipContainer = ({ children, color, text }: TooltipContainerProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (text === '') return;
+
     const tooltipElement = ref.current;
 
     if (tooltipElement) {
       tooltipElement.style.setProperty('--tooltip-color', color);
     }
-  }, [color]);
+  }, [color, text]);
 
   return (
-    <div className={`tooltip-container ${styles['tooltip']}`} data-tooltip={text}>
-      {children}
-    </div>
+    <>
+      <div
+        className={`${text !== '' ? `tooltip-container ${styles['tooltip']}` : ''}`.trim()}
+        data-tooltip={text}
+      >
+        {children}
+      </div>
+    </>
   );
 };
 

@@ -18,7 +18,7 @@ const Feedback = (props: FeedbackProps) => {
 
   return (
     <>
-      {isVisible && (
+      {isVisible && message !== '' && (
         <div className={`${styles['feedback']} ${statusClassName}`.trim()}>
           <p className={styles['feedback__message']}>{message}</p>
           <div className={styles['feedback__close']} onClick={() => onClose()}>

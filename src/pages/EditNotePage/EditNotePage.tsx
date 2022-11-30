@@ -57,7 +57,7 @@ const EditNotePage = () => {
       <Feedback
         status={getStatusColor(form.status)}
         buttons={[]}
-        message={form.feedback.message}
+        message={form.feedback.submitMessage}
         isVisible={form.feedback.isVisible}
         onClose={eventHandlers.hideFeedback}
       />

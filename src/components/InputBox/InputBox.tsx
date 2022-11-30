@@ -4,6 +4,7 @@ import styles from './InputBox.module.scss';
 import { NoteTagInfo } from '../../models/noteTags';
 import TooltipContainer from '../TooltipContainer/TooltipContainer';
 import { useState } from 'react';
+import { getStatusColor } from '../../utils/Form/formValidation';
 
 interface TooltipOptions {
   color: string;
@@ -93,57 +94,22 @@ const InputBox: React.FC<InputBoxProps> = props => {
 
       {inputElementType === 'textarea' && (
         <>
-          {tooltip && (
-            <TooltipContainer color="#333" text="My first tooltip">
-              <textarea
-                className={isFocused && !isValid ? 'input--invalid' : ''}
-                placeholder={placeholder}
-                id={id}
-                value={value}
-                onFocus={focusHandler}
-                onChange={event => {
-                  if (onTextareaChange) {
-                    onTextareaChange(event);
-                  }
-                }}
-              />
-            </TooltipContainer>
-          )}
-
-          {!tooltip && (
+          <TooltipContainer color={'#333'} text={tooltip?.text || ''}>
             <textarea
               className={isFocused && !isValid ? 'input--invalid' : ''}
               placeholder={placeholder}
               id={id}
               value={value}
               onFocus={focusHandler}
-              onChange={event => {
-                if (onTextareaChange) {
-                  onTextareaChange(event);
-                }
-              }}
+              onChange={onTextareaChange}
             />
-          )}
+          </TooltipContainer>
         </>
       )}
 
       {(inputElementType === 'input' || !inputElementType) && (
         <>
-          {tooltip && (
-            <TooltipContainer color="#333" text="My first tooltip">
-              <input
-                className={isFocused && !isValid ? 'input--invalid' : ''}
-                type={type}
-                id={id}
-                placeholder={placeholder}
-                value={value}
-                onFocus={focusHandler}
-                onChange={onInputChange}
-              />
-            </TooltipContainer>
-          )}
-
-          {!tooltip && (
+          <TooltipContainer color="#333" text={tooltip?.text || ''}>
             <input
               className={isFocused && !isValid ? 'input--invalid' : ''}
               type={type}
@@ -151,10 +117,9 @@ const InputBox: React.FC<InputBoxProps> = props => {
               placeholder={placeholder}
               value={value}
               onFocus={focusHandler}
-              // onBlur={blurHandler}
               onChange={onInputChange}
             />
-          )}
+          </TooltipContainer>
         </>
       )}
     </div>

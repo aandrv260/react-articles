@@ -16,7 +16,6 @@
     position: absolute;
     top: -0.25rem;
     left: 50%;
-
     transition: all 0.15s;
     transform: translateX(-50%) translateY(var(--translate-y, 0)) scale(var(--scale));
     transform-origin: bottom center;

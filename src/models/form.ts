@@ -30,8 +30,10 @@ export interface NewNoteAction {
   curNote?: Note;
 }
 
-interface NoteFormFeedback {
-  message: string;
+export interface NoteFormFeedback {
+  headingMessage: string;
+  descriptionMessage: string;
+  submitMessage: string;
   isVisible: boolean;
 }
 
@@ -81,3 +83,32 @@ export interface FormEventHandlers {
 }
 
 export type FormType = 'create' | 'edit';
+
+// Validation
+export type TextInputValidator = (textInput: string | undefined) => boolean;
+export type StatusColor = (formStatus: FormStatus) => FeedbackStatus;
+
+export type InputType = 'heading' | 'description';
+
+export interface FormInputs {
+  heading: string;
+  description: string;
+}
+
+export type InputData = {
+  type: InputType;
+  value: string | undefined;
+};
+
+export type InputValidator = (
+  state: NoteFormState,
+  inputData: InputData,
+  feedbackMessage: string
+) => NoteFormState;
+
+export type FullFormValidationData = {
+  heading: string;
+  description: string;
+};
+
+export type FullFormValidation = (data: FullFormValidationData) => boolean;

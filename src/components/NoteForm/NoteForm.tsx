@@ -17,8 +17,6 @@ interface NoteFormProps {
 const NoteForm = (props: NoteFormProps) => {
   const { form, eventHandlers, buttons, allTags } = props;
 
-  console.log('validation', form.validation);
-
   return (
     <>
       <Form hasGroups>
@@ -27,10 +25,13 @@ const NoteForm = (props: NoteFormProps) => {
             id="note-title"
             inputElementType="input"
             type={'text'}
-            label="Title"
+            label="Heading"
             value={form.heading}
             onInputChange={eventHandlers.headingChange}
-            tooltip={{ text: 'My tooltip', color: '#333' }}
+            tooltip={{
+              text: !form.validation.headingIsValid ? form.feedback.headingMessage : '',
+              color: '#333',
+            }}
             isValid={form.validation.headingIsValid}
           />
 
@@ -57,7 +58,10 @@ const NoteForm = (props: NoteFormProps) => {
           value={form.description}
           onTextareaChange={eventHandlers.descriptionChange}
           inputElementType="textarea"
-          tooltip={{ text: 'My tooltip', color: '#333' }}
+          tooltip={{
+            text: !form.validation.descriptionIsValid ? form.feedback.descriptionMessage : '',
+            color: '#333',
+          }}
           isValid={form.validation.descriptionIsValid}
         />
       </Form>

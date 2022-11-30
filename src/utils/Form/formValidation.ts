@@ -1,26 +1,18 @@
-import { FeedbackStatus, FormStatus, FormValidation, NoteFormState } from '../../models/form';
-import { noFeedback } from './form';
+import { InputType } from 'zlib';
+import {
+  FormValidation,
+  FullFormValidation,
+  InputValidator,
+  NoteFormState,
+  StatusColor,
+  TextInputValidator,
+} from '../../models/form';
 
-type TextInputValidator = (textInput: string | undefined) => boolean;
-type StatusColor = (formStatus: FormStatus) => FeedbackStatus;
+const minNumOfHeadingChars = 5;
+const minNumOfDescriptionChars = 20;
 
-type InputData = {
-  type: 'heading' | 'description';
-  value: string | undefined;
-};
-
-type InputValidator = (
-  state: NoteFormState,
-  inputData: InputData,
-  feedbackMessage: string
-) => NoteFormState;
-
-type FullFormValidationData = {
-  heading: string;
-  description: string;
-};
-
-type FullFormValidation = (data: FullFormValidationData) => boolean;
+const invalidHeadingMessage = `The heading must have at least ${minNumOfHeadingChars} characters`;
+const invalidDescriptionMessage = `The description must have at least ${minNumOfDescriptionChars} characters`;
 
 export const getStatusColor: StatusColor = formStatus => {
   switch (formStatus) {
@@ -36,11 +28,11 @@ export const getStatusColor: StatusColor = formStatus => {
 };
 
 export const isFormHeadingValid: TextInputValidator = heading => {
-  return heading !== undefined && heading.length > 5;
+  return heading !== undefined && heading.length > minNumOfHeadingChars;
 };
 
 export const isFormDescriptionValid: TextInputValidator = description => {
-  return description !== undefined && description.length > 20;
+  return description !== undefined && description.length > minNumOfDescriptionChars;
 };
 
 export const entireFormIsValid: FullFormValidation = ({ heading, description }) => {
@@ -61,7 +53,11 @@ export const validateInputsAndReturnResult = (
   };
 };
 
-export const validateTextInput: InputValidator = (state, inputData, feedbackMessage) => {
+export const validateTextInput: InputValidator = (
+  state,
+  inputData,
+  feedbackMessage
+): NoteFormState => {
   const isInputHeading = inputData.type === 'heading';
   const headingIsValid = isInputHeading
     ? isFormHeadingValid(inputData.value)
@@ -76,7 +72,13 @@ export const validateTextInput: InputValidator = (state, inputData, feedbackMess
       ...state,
       status: 'VALIDATION_ISSUE',
       feedback: {
-        message: feedbackMessage,
+        headingMessage:
+          inputData.type === 'heading' ? feedbackMessage : state.feedback.headingMessage,
+
+        descriptionMessage:
+          inputData.type === 'description' ? feedbackMessage : state.feedback.descriptionMessage,
+
+        submitMessage: '',
         isVisible: true,
       },
 
@@ -102,7 +104,23 @@ export const validateTextInput: InputValidator = (state, inputData, feedbackMess
       descriptionIsValid,
       entireFormIsValid: headingIsValid && descriptionIsValid,
     },
-    feedback: noFeedback,
+
+    feedback: {
+      headingMessage: inputData.type === 'heading' ? '' : state.feedback.headingMessage,
+      descriptionMessage: inputData.type === 'description' ? '' : state.feedback.descriptionMessage,
+      submitMessage: '',
+      isVisible: true,
+    },
     [inputData.type]: finalValue,
   };
+};
+
+export const generateInputValidationMessage = (type: InputType | 'form', input: string): string => {
+  const isInputHeading = type === 'heading';
+
+  if (isInputHeading) {
+    return isFormHeadingValid(input) ? invalidHeadingMessage : '';
+  }
+
+  return isFormDescriptionValid(input) ? invalidDescriptionMessage : '';
 };

@@ -1,8 +1,13 @@
-import { FormType, NoteFormState } from '../../models/form';
+import { FormType, NoteFormFeedback, NoteFormState } from '../../models/form';
 import { Note } from '../../models/notes';
 import generateId from '../generateId';
 
-export const noFeedback = { message: '', isVisible: false };
+export const noFeedback: NoteFormFeedback = {
+  headingMessage: '',
+  descriptionMessage: '',
+  submitMessage: '',
+  isVisible: false,
+};
 
 export const initialState: NoteFormState = {
   heading: '',

@@ -9,7 +9,11 @@ import {
   writeStateToLocalStorageAfterNoteEdit,
 } from '../store/notesActions';
 import { convertNoteToFormState, initialState, noFeedback } from '../utils/Form/form';
-import { validateInputsAndReturnResult, validateTextInput } from '../utils/Form/formValidation';
+import {
+  generateInputValidationMessage,
+  validateInputsAndReturnResult,
+  validateTextInput,
+} from '../utils/Form/formValidation';
 import generateId from '../utils/generateId';
 
 const noteFormReducer: FormReducer = (state, action): NoteFormState => {
@@ -50,7 +54,10 @@ const noteFormReducer: FormReducer = (state, action): NoteFormState => {
         validation: validateInputsAndReturnResult(state.heading, state.description),
         status: 'NOTE_CREATED',
         feedback: {
-          message: 'Successfully created your new note!',
+          headingMessage: '',
+          descriptionMessage: '',
+          submitMessage: 'Successfully created your new note!',
+          // message: 'Successfully created your new note!',
           isVisible: true,
         },
       };
@@ -61,7 +68,9 @@ const noteFormReducer: FormReducer = (state, action): NoteFormState => {
         validation: validateInputsAndReturnResult(state.heading, state.description),
         status: 'VALIDATION_ISSUE',
         feedback: {
-          message: 'Form invalid',
+          headingMessage: generateInputValidationMessage('heading', state.heading),
+          descriptionMessage: generateInputValidationMessage('description', state.description),
+          submitMessage: 'Form invalid. Please fix the errors and submit it again.',
           isVisible: true,
         },
       };
@@ -89,7 +98,9 @@ const noteFormReducer: FormReducer = (state, action): NoteFormState => {
         ),
 
         feedback: {
-          message: 'Form reset successfully!',
+          headingMessage: '',
+          descriptionMessage: '',
+          submitMessage: 'Form reset successfully!',
           isVisible: true,
         },
       };

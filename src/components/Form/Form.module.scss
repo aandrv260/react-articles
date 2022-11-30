@@ -32,6 +32,10 @@
     gap: 2.4rem;
     flex: 1;
 
+    label + div input {
+      height: 100%;
+    }
+
     & > * {
       flex-basis: 50%;
     }
