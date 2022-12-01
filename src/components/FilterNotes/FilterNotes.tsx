@@ -15,6 +15,7 @@ const FilterNotes = () => {
           label="Title"
           value={filters.heading}
           onInputChange={titleChangeHandler}
+          noValidation
         />
 
         <InputBox
@@ -25,6 +26,7 @@ const FilterNotes = () => {
           multiSelectValue={filters.tags}
           onMultiSelectChange={tagsChangeHandler}
           inputElementType="multi-select"
+          noValidation
         />
       </FormGroup>
     </Form>

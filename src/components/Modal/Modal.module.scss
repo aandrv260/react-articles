@@ -5,6 +5,8 @@
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
 
   &__box {
     position: absolute;
@@ -41,6 +43,7 @@
     display: flex;
     gap: 1rem;
     max-width: 100%;
+    transition: all 300ms;
 
     input {
       flex: 1;
@@ -68,3 +71,41 @@
     color: var(--color-danger);
   }
 }
+
+.modal-closed {
+}
+
+.modal-opening {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-closed,
+.modal-closing {
+  opacity: 0;
+  visibility: hidden;
+}
+
+// @keyframes fade-in {
+//   0% {
+//     opacity: 0;
+//     visibility: hidden;
+//   }
+
+//   100% {
+//     opacity: 1;
+//     visibility: visible;
+//   }
+// }
+
+// @keyframes disappear {
+//   0% {
+//     opacity: 1;
+//     visibility: visible;
+//   }
+
+//   100% {
+//     opacity: 0;
+//     visibility: hidden;
+//   }
+// }

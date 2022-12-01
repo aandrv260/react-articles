@@ -22,6 +22,7 @@ interface InputBoxProps {
   onInputChange?: InputChangeHandler;
   onMultiSelectChange?: (data: NoteTagInfo[]) => void;
   inputElementType?: 'input' | 'textarea' | 'multi-select';
+  noValidation?: boolean;
 
   /**
    * This must be specified if `inputElementType` is 'input' or 'textarea'
@@ -45,6 +46,7 @@ const InputBox: React.FC<InputBoxProps> = props => {
     onMultiSelectChange,
     tooltip,
     isValid,
+    noValidation,
   } = props;
 
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -96,7 +98,7 @@ const InputBox: React.FC<InputBoxProps> = props => {
         <>
           <TooltipContainer color={'#333'} text={tooltip?.text || ''}>
             <textarea
-              className={isFocused && !isValid ? 'input--invalid' : ''}
+              className={isFocused && !noValidation && !isValid ? 'input--invalid' : ''}
               placeholder={placeholder}
               id={id}
               value={value}
@@ -111,7 +113,7 @@ const InputBox: React.FC<InputBoxProps> = props => {
         <>
           <TooltipContainer color="#333" text={tooltip?.text || ''}>
             <input
-              className={isFocused && !isValid ? 'input--invalid' : ''}
+              className={isFocused && !noValidation && !isValid ? 'input--invalid' : ''}
               type={type}
               id={id}
               placeholder={placeholder}
