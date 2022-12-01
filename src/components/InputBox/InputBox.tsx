@@ -4,7 +4,6 @@ import styles from './InputBox.module.scss';
 import { NoteTagInfo } from '../../models/noteTags';
 import TooltipContainer from '../TooltipContainer/TooltipContainer';
 import { useState } from 'react';
-import { getStatusColor } from '../../utils/Form/formValidation';
 
 interface TooltipOptions {
   color: string;

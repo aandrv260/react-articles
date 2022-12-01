@@ -38,22 +38,10 @@ const AllNotesPage = () => {
 
   return (
     <PageContainer header={headerInfo}>
-      {/* <Transition in={modalIsVisible}>
-        {state => (
-          <Modal isVisible={modalIsVisible}>
-            <EditTags closeHandler={setModalIsVisible.bind(null, false)} />
-          </Modal>
-        )} */}
-      {/* {modalIsVisible && (
-          // <Modal isVisible={modalIsVisible} closeHandler={setModalIsVisible.bind(null, false)} />
-          <Modal isVisible={modalIsVisible}>
-            <EditTags closeHandler={setModalIsVisible.bind(null, false)} />
-          </Modal>
-        )} */}
-      {/* </Transition> */}
       <Modal isVisible={modalIsVisible}>
         <EditTags closeHandler={setModalIsVisible.bind(null, false)} />
       </Modal>
+
       <FilterNotes />
       <Notes notes={notes} />
     </PageContainer>

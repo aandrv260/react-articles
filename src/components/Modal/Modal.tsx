@@ -25,16 +25,11 @@ const Modal = (props: ModalProps) => {
         ];
 
         return (
-          <div className={classNames.join(' ')} style={{ transition: `all 200ms` }}>
+          <div className={classNames.join(' ')}>
             <div className={styles['modal__box']}>{children}</div>
           </div>
         );
       }}
-      {/* {isVisible && (
-        <div className={styles['modal']}>
-          <div className={styles['modal__box']}>{children}</div>
-        </div>
-      )} */}
     </Transition>,
     document.getElementById('modal') as HTMLDivElement
   );

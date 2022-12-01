@@ -1,4 +1,5 @@
 import { NotesInfo } from '../../models/notes';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Note from '../Note/Note';
 import styles from './Notes.module.scss';
 
@@ -6,12 +7,14 @@ interface NotesProps {
   notes: NotesInfo;
 }
 
-const Notes = (props: NotesProps) => {
+const Notes = ({ notes }: NotesProps) => {
   return (
     <>
-      {props.notes.length > 0 && (
+      {notes.length === 0 && <ErrorMessage message="No notes found" />}
+
+      {notes.length > 0 && (
         <div className={styles['notes']}>
-          {props.notes.map(note => (
+          {notes.map(note => (
             <Note
               heading={note.heading}
               tags={note.tags}

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { Transition } from 'react-transition-group';
 import TransitionOrig from 'react-transition-group/Transition';
 import styles from './TooltipContainer.module.scss';
