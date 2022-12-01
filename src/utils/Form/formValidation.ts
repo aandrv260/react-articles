@@ -11,8 +11,8 @@ import {
 const minNumOfHeadingChars = 5;
 const minNumOfDescriptionChars = 20;
 
-const invalidHeadingMessage = `The heading must have at least ${minNumOfHeadingChars} characters`;
-const invalidDescriptionMessage = `The description must have at least ${minNumOfDescriptionChars} characters`;
+const invalidHeadingMessage = `The heading must contain at least ${minNumOfHeadingChars} characters`;
+const invalidDescriptionMessage = `The description must contain at least ${minNumOfDescriptionChars} characters`;
 
 export const getStatusColor: StatusColor = formStatus => {
   switch (formStatus) {
@@ -28,11 +28,11 @@ export const getStatusColor: StatusColor = formStatus => {
 };
 
 export const isFormHeadingValid: TextInputValidator = heading => {
-  return heading !== undefined && heading.length > minNumOfHeadingChars;
+  return heading !== undefined && heading.length >= minNumOfHeadingChars;
 };
 
 export const isFormDescriptionValid: TextInputValidator = description => {
-  return description !== undefined && description.length > minNumOfDescriptionChars;
+  return description !== undefined && description.length >= minNumOfDescriptionChars;
 };
 
 export const entireFormIsValid: FullFormValidation = ({ heading, description }) => {
@@ -53,18 +53,17 @@ export const validateInputsAndReturnResult = (
   };
 };
 
-export const validateTextInput: InputValidator = (
-  state,
-  inputData,
-  feedbackMessage
-): NoteFormState => {
+export const validateTextInput: InputValidator = (state, inputData): NoteFormState => {
   const isInputHeading = inputData.type === 'heading';
+
   const headingIsValid = isInputHeading
     ? isFormHeadingValid(inputData.value)
     : state.validation.headingIsValid;
+
   const descriptionIsValid = !isInputHeading
     ? isFormDescriptionValid(inputData.value)
     : state.validation.descriptionIsValid;
+
   const isInputValid = isInputHeading ? isFormHeadingValid : isFormDescriptionValid;
 
   if (!isInputValid(inputData.value)) {
@@ -73,10 +72,12 @@ export const validateTextInput: InputValidator = (
       status: 'VALIDATION_ISSUE',
       feedback: {
         headingMessage:
-          inputData.type === 'heading' ? feedbackMessage : state.feedback.headingMessage,
+          inputData.type === 'heading' ? invalidHeadingMessage : state.feedback.headingMessage,
 
         descriptionMessage:
-          inputData.type === 'description' ? feedbackMessage : state.feedback.descriptionMessage,
+          inputData.type === 'description'
+            ? invalidDescriptionMessage
+            : state.feedback.descriptionMessage,
 
         submitMessage: '',
         isVisible: true,
@@ -89,7 +90,7 @@ export const validateTextInput: InputValidator = (
         entireFormIsValid: headingIsValid && descriptionIsValid,
       },
 
-      // Insert the type (description or heading) as part of the new state
+      // Insert the type (description or heading) dynamically as part of the new state
       [inputData.type]: inputData.value as string,
     };
   }

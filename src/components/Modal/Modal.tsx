@@ -13,7 +13,7 @@ const Modal = (props: ModalProps) => {
   const { isVisible, children } = props;
 
   return ReactDOM.createPortal(
-    <Transition in={isVisible} timeout={400} mountOnEnter unmountOnExit>
+    <Transition in={isVisible} timeout={300} mountOnEnter unmountOnExit>
       {transitionState => {
         const classNames = [
           styles['modal'],
@@ -25,7 +25,7 @@ const Modal = (props: ModalProps) => {
         ];
 
         return (
-          <div className={classNames.join(' ')} style={{ transition: `all 300ms` }}>
+          <div className={classNames.join(' ')} style={{ transition: `all 200ms` }}>
             <div className={styles['modal__box']}>{children}</div>
           </div>
         );

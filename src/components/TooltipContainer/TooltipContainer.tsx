@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import { Transition } from 'react-transition-group';
+import TransitionOrig from 'react-transition-group/Transition';
 import styles from './TooltipContainer.module.scss';
 
 interface TooltipContainerProps {
@@ -7,13 +9,15 @@ interface TooltipContainerProps {
   text: string;
 }
 
+console.log('Transition compare', Transition === TransitionOrig);
+
 /**
  * - This components is used to wrap any element on which you want to put a tooltip because the tooltip is positioned absolutely and it will otherwise not work on `HTMLInputElement`
  */
 const TooltipContainer = ({ children, color, text }: TooltipContainerProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (text === '') return;
 
     const tooltipElement = ref.current;
@@ -26,7 +30,9 @@ const TooltipContainer = ({ children, color, text }: TooltipContainerProps) => {
   return (
     <>
       <div
-        className={`${text !== '' ? `tooltip-container ${styles['tooltip']}` : ''}`.trim()}
+        className={`${`tooltip-container ${styles['tooltip']} ${
+          text === '' ? styles['tooltip--hidden'] : ''
+        }`}`.trim()}
         data-tooltip={text}
       >
         {children}

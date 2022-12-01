@@ -72,15 +72,11 @@
   }
 }
 
-.modal-closed {
-}
-
 .modal-opening {
   opacity: 1;
   visibility: visible;
 }
 
-.modal-closed,
 .modal-closing {
   opacity: 0;
   visibility: hidden;

@@ -19,11 +19,7 @@ import generateId from '../utils/generateId';
 const noteFormReducer: FormReducer = (state, action): NoteFormState => {
   switch (action.type) {
     case 'CHANGE_HEADING': {
-      return validateTextInput(
-        state,
-        { type: 'heading', value: action.value },
-        'The heading must have >= 5 characters.'
-      );
+      return validateTextInput(state, { type: 'heading', value: action.value });
     }
 
     case 'CHANGE_IS_FEATURED':
@@ -41,11 +37,7 @@ const noteFormReducer: FormReducer = (state, action): NoteFormState => {
       };
 
     case 'CHANGE_DESCRIPTION': {
-      return validateTextInput(
-        state,
-        { type: 'description', value: action.value },
-        'Description must contain at least 20 characters.'
-      );
+      return validateTextInput(state, { type: 'description', value: action.value });
     }
 
     case 'SET_NOTE_CREATED':
@@ -57,7 +49,6 @@ const noteFormReducer: FormReducer = (state, action): NoteFormState => {
           headingMessage: '',
           descriptionMessage: '',
           submitMessage: 'Successfully created your new note!',
-          // message: 'Successfully created your new note!',
           isVisible: true,
         },
       };
@@ -171,15 +162,15 @@ const useNoteForm = (formType: FormType, noteId?: string) => {
   };
 
   const resetEditForm = () => {
-    if (curNote) {
-      dispatch({ type: 'RESET_EDIT_FORM', curNote });
+    if (!curNote) return;
 
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
-    }
+    dispatch({ type: 'RESET_EDIT_FORM', curNote });
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
   };
 
   const eventHandlers: FormEventHandlers = {

@@ -102,8 +102,8 @@ export type InputData = {
 
 export type InputValidator = (
   state: NoteFormState,
-  inputData: InputData,
-  feedbackMessage: string
+  inputData: InputData
+  // feedbackMessage: string
 ) => NoteFormState;
 
 export type FullFormValidationData = {
