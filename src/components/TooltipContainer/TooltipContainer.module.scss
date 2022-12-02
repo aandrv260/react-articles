@@ -3,6 +3,7 @@
   flex-direction: column;
   position: relative;
   transition: all 0.15s;
+  --tooltip-color: #555;
 
   input {
     flex: 1;
@@ -12,7 +13,6 @@
   &::after {
     --scale: 0;
     --arrow-size: 10px;
-    --tooltip-color: #555;
 
     position: absolute;
     top: -0.25rem;

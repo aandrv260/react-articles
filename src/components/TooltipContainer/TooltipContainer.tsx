@@ -1,6 +1,4 @@
 import { useLayoutEffect, useRef } from 'react';
-import { Transition } from 'react-transition-group';
-import TransitionOrig from 'react-transition-group/Transition';
 import styles from './TooltipContainer.module.scss';
 
 interface TooltipContainerProps {
@@ -20,9 +18,7 @@ const TooltipContainer = ({ children, color, text }: TooltipContainerProps) => {
 
     const tooltipElement = ref.current;
 
-    if (tooltipElement) {
-      tooltipElement.style.setProperty('--tooltip-color', color);
-    }
+    tooltipElement && tooltipElement.style.setProperty('--tooltip-color', color);
   }, [color, text]);
 
   return (
@@ -32,6 +28,7 @@ const TooltipContainer = ({ children, color, text }: TooltipContainerProps) => {
           text === '' ? styles['tooltip--hidden'] : ''
         }`}`.trim()}
         data-tooltip={text}
+        ref={ref}
       >
         {children}
       </div>

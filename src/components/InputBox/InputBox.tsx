@@ -94,7 +94,7 @@ const InputBox: React.FC<InputBoxProps> = props => {
 
       {inputElementType === 'textarea' && (
         <>
-          <TooltipContainer color={'#333'} text={tooltip?.text || ''}>
+          <TooltipContainer color={'#911a1a'} text={tooltip?.text || ''}>
             <textarea
               className={isFocused && !noValidation && !isValid ? 'input--invalid' : ''}
               placeholder={placeholder}
@@ -109,7 +109,7 @@ const InputBox: React.FC<InputBoxProps> = props => {
 
       {(inputElementType === 'input' || !inputElementType) && (
         <>
-          <TooltipContainer color="#333" text={tooltip?.text || ''}>
+          <TooltipContainer color="#911a1a" text={tooltip?.text || ''}>
             <input
               className={isFocused && !noValidation && !isValid ? 'input--invalid' : ''}
               type={type}
