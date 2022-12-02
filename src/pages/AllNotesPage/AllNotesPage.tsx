@@ -13,12 +13,8 @@ import EditTags from '../../components/EditTags/EditTags';
 
 const AllNotesPage = () => {
   const navigate = useNavigate();
-  const state = useSelector((state: NotesSlice) => state);
   const notes = useSelector((state: NotesSlice) => state.filteredNotes);
   const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
-
-  // For testing the Tags ids. Remove after you finish with the tags edit functionality
-  console.log('state', state);
 
   const headerInfo: HeaderInfo = {
     heading: 'All Notes',

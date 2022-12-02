@@ -9,8 +9,6 @@ interface TooltipContainerProps {
   text: string;
 }
 
-console.log('Transition compare', Transition === TransitionOrig);
-
 /**
  * - This components is used to wrap any element on which you want to put a tooltip because the tooltip is positioned absolutely and it will otherwise not work on `HTMLInputElement`
  */

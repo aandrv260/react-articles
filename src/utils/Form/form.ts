@@ -29,11 +29,9 @@ export const convertNoteToFormState = (
   formType: FormType,
   noteId?: string
 ): NoteFormState => {
-  console.log(note);
-
   if (!note) {
     formType === 'edit' && console.error('note not found based on the ID provided in useNoteForm');
-    formType === 'edit' && console.error(note);
+    formType === 'edit' && console.log('note in convertNoteToFormState', note);
 
     return initialState;
   }

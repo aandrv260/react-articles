@@ -4,6 +4,7 @@ import { Note } from '../models/notes';
 import { NoteTagInfo } from '../models/noteTags';
 import { NotesSlice, EditTag } from '../models/store';
 import { formStateToNote } from '../utils/Form/form';
+import { resetFilters, updateAllTags } from './actionUtils';
 import { filterNotes } from './notesFiltersUtils';
 
 type Filter = string | NoteTagInfo[];
@@ -33,31 +34,15 @@ export const notesSlice = createSlice({
     },
 
     editNote(curState, action: PayloadAction<NoteFormState>) {
-      // TODO: Refactor the findIndex functionality that repeats
       const editedNote = action.payload;
       const { heading, description, isFeatured, tags } = editedNote;
       const indexOfNote = curState.notes.findIndex(note => note.id === editedNote.id);
 
-      console.log('current(curState)', current(curState));
-
       // Edit note's values
       Object.assign(curState.notes[indexOfNote], { heading, description, isFeatured, tags });
 
-      // Makes the unique tags be pushed into the allTags array
-      const newNoteTagsIds = editedNote.tags.map(tag => tag.value);
-      const allTagIds = curState.allTags.map(tag => tag.value);
-
-      newNoteTagsIds.forEach(editedNoteTag => {
-        if (!allTagIds.includes(editedNoteTag)) {
-          const indexOfTagObject = editedNote.tags.findIndex(tag => tag.value === editedNoteTag);
-
-          if (indexOfTagObject) {
-            console.log();
-            curState.allTags.push(editedNote.tags[indexOfTagObject]);
-          }
-        }
-      });
-
+      curState.allTags = updateAllTags(curState);
+      curState.filters = resetFilters();
       curState.filteredNotes = curState.notes;
     },
 
@@ -70,6 +55,7 @@ export const notesSlice = createSlice({
       }
 
       curState.filteredNotes = curState.notes;
+      curState.filters = resetFilters();
     },
 
     deleteTag(curState, action: PayloadAction<NoteTagInfo>) {
@@ -77,31 +63,30 @@ export const notesSlice = createSlice({
 
       curState.allTags.splice(indexOfTag, 1);
 
+      // Delete the tag from all of the notes that contain it
       curState.notes.forEach(note => {
         const tagIndex = note.tags.findIndex(tag => tag.value === action.payload.value);
-        console.log('in the loop, index: ', tagIndex);
 
         if (tagIndex !== -1) {
           note.tags.splice(tagIndex, 1);
         }
 
         curState.filteredNotes = curState.notes;
-
-        // Reset filters
-        curState.filters.heading = '';
-        curState.filters.tags = [];
+        curState.filters = resetFilters();
       });
     },
 
     editTag(curState, action: PayloadAction<EditTag>) {
       const { oldTag, newTag } = action.payload;
-      const indexOfOldTag = curState.allTags.findIndex(tag => tag.value === oldTag.value);
 
+      // Update allTags array
+      const indexOfOldTag = curState.allTags.findIndex(tag => tag.value === oldTag.value);
       curState.allTags[indexOfOldTag].label = newTag.label;
       curState.allTags[indexOfOldTag].value = newTag.value;
 
-      curState.notes.forEach((note, noteIndex) => {
-        note.tags.forEach((tag, tagIndex) => {
+      // Update each tag in the note that has the value of oldTag
+      curState.notes.forEach(note => {
+        note.tags.forEach(tag => {
           if (tag.value === oldTag.value) {
             tag.value = newTag.value;
             tag.label = newTag.label;
@@ -109,10 +94,8 @@ export const notesSlice = createSlice({
         });
       });
 
-      // Reset filtered notes
       curState.filteredNotes = curState.notes;
-      curState.filters.heading = '';
-      curState.filters.tags = [];
+      curState.filters = resetFilters();
     },
 
     filterChangeHandler(curState, action: PayloadAction<Filter>) {
@@ -128,14 +111,9 @@ export const notesSlice = createSlice({
     },
 
     create(curState, action: PayloadAction<NoteFormState>) {
-      // const newNoteForm = action.payload;
-      // console.log('newNote === action.payload', newNote === action.payload);
-
       const newNote: Note = formStateToNote(action.payload);
 
       curState.notes.push(newNote);
-
-      // Reset the filtered notes
       curState.filteredNotes = curState.notes;
 
       if (curState.allTags.length === 0) {
@@ -144,20 +122,8 @@ export const notesSlice = createSlice({
         return;
       }
 
-      // Makes the unique tags be pushed into the allTags array
-      const newNoteTagsIds = newNote.tags.map(tag => tag.value);
-      const allTagIds = curState.allTags.map(tag => tag.value);
-
-      newNoteTagsIds.forEach(newNoteTag => {
-        if (!allTagIds.includes(newNoteTag)) {
-          const indexOfTagObject = newNote.tags.findIndex(tag => tag.value === newNoteTag);
-
-          if (indexOfTagObject) {
-            console.log();
-            curState.allTags.push(newNote.tags[indexOfTagObject]);
-          }
-        }
-      });
+      curState.allTags = updateAllTags(curState);
+      curState.filters = resetFilters();
     },
   },
 });

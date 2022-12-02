@@ -54,7 +54,6 @@ const InputBox: React.FC<InputBoxProps> = props => {
     setIsFocused(true);
   };
 
-  console.log(inputElementType, isValid);
   return (
     <div className={styles['input-box']} data-box="input-box">
       <label htmlFor={id}>{label}</label>

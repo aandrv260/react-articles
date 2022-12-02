@@ -26,7 +26,6 @@ const EditNotePage = () => {
 
   const confirmEditHandler = () => {
     eventHandlers.submitForm();
-    console.log(notePageSlug);
     navigate(notePageSlug);
   };
 
@@ -46,7 +45,7 @@ const EditNotePage = () => {
       },
     ],
   };
-  console.log('resetForm', eventHandlers.resetForm);
+
   const formButtons: NoteFormButton[] = [
     { text: 'Confirm', designStyle: 'full', onClick: confirmEditHandler },
     { text: 'Reset', designStyle: 'outline', onClick: eventHandlers.resetForm },
